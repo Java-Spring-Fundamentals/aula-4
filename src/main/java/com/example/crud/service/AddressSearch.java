@@ -1,6 +1,9 @@
 package com.example.crud.service;
 
 import com.example.crud.domain.address.Address;
+import com.example.crud.infra.CepNotFoundException;
+import com.example.crud.infra.InvalidCepException;
+import com.example.crud.infra.ViaCepUnavailableException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +42,29 @@ public class AddressSearch {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public  Address searchByCep(String cep) {
+
+        if (cep == null || !cep.matches("\\d{8}")){
+            throw new InvalidCepException("O CEP  deve conter 8 dígitos.");
+        }
+
+        String url = "https://viacep.com.br/ws/{cep}/json/";
+
+        try {
+            Address address = restTemplate.getForObject(url, Address.class, cep);
+
+            if (address == null || address.getLocalidade() == null) {
+                throw new CepNotFoundException("CEP não encontrado.");
+            }
+
+            return  address;
+        }catch (CepNotFoundException e){
+            throw e;
+        }catch (Exception e){
+            throw new  ViaCepUnavailableException("O serviço ViaCEP está indisponível no momento. Por favor, tente novamente mais tarde.");
         }
     }
 }

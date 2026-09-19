@@ -31,6 +31,22 @@ public class ProductController {
         this.addressSearch = addressSearch;
     }
 
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<Boolean> verifyAvailability(@PathVariable String id, @RequestParam String cep){
+        Optional<Product> optionalProduct = repository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            var address = addressSearch.searchByCep(cep);
+
+            Boolean available = product.getDistribution_center().equalsIgnoreCase(address.getLocalidade());
+
+            return ResponseEntity.ok(available);
+        } else {
+            throw new EntityNotFoundException();
+        }
+
+    }
+
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
         var allProducts = repository.findAllByActiveTrue();
