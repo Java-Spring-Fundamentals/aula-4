@@ -1,0 +1,198 @@
+{
+  "info": {
+    "_postman_id": "7931e5ba-0e99-422a-b063-33d388324470",
+    "name": "product",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "28257850"
+  },
+  "item": [
+    {
+      "name": "create",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"PC\",\r\n  \"price\": 15000,\r\n  \"category\": \"electronics\",\r\n  \"distributionCenter\": \"SP\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get category param",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "category",
+            "value": "clothes",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product?category=clothes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "clothes"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get min value",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "category",
+            "value": "clothes",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product?minPrice=10000",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ],
+          "query": [
+            {
+              "key": "minPrice",
+              "value": "10000"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get product for id",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "category",
+            "value": "clothes"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product/distribution-center/SP?category=clothes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "distribution-center",
+            "SP"
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "clothes"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "top products",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/top-expensive",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "top-expensive"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "cep por centro de disttibuição",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/availability/p1?cep=08773380",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "availability",
+            "p1"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "08773380"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get product",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
