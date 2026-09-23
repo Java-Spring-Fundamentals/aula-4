@@ -1,0 +1,76 @@
+{
+  "info": {
+    "name": "Atividade M1 - Integração ViaCEP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Produto disponível (true)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/p1?cep=08773380",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "p1"],
+          "query": [{ "key": "cep", "value": "08773380" }]
+        }
+      }
+    },
+    {
+      "name": "Produto indisponível (false)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/p11?cep=08773380",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "p11"],
+          "query": [{ "key": "cep", "value": "08773380" }]
+        }
+      }
+    },
+    {
+      "name": "CEP mal formatado (400)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/p1?cep=123",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "p1"],
+          "query": [{ "key": "cep", "value": "123" }]
+        }
+      }
+    },
+    {
+      "name": "CEP inexistente (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/p1?cep=99999999",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "p1"],
+          "query": [{ "key": "cep", "value": "99999999" }]
+        }
+      }
+    },
+    {
+      "name": "Produto inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/id-inexistente?cep=08773380",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "id-inexistente"],
+          "query": [{ "key": "cep", "value": "08773380" }]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ]
+}
