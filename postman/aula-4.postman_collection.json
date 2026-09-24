@@ -1,0 +1,1323 @@
+{
+  "info": {
+    "name": "Aula 4 - Atividade M1 (Integração ViaCEP)",
+    "description": "Requests para validar o CRUD, o centro de distribuição, as consultas das aulas 2 e 3 e a integração com a ViaCEP.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "p20",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. ViaCEP - Disponibilidade",
+      "item": [
+        {
+          "name": "Disponível - p1 (Mogi das Cruzes) + CEP de Mogi",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('retorna true', function () {",
+                  "    pm.expect(pm.response.json()).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773380"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/availability/p1?cep=08773380"
+            }
+          }
+        },
+        {
+          "name": "Disponível - CEP com hífen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('retorna true', function () {",
+                  "    pm.expect(pm.response.json()).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773-380"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/availability/p1?cep=08773-380"
+            }
+          }
+        },
+        {
+          "name": "Indisponível - p11 (Recife) + CEP de Mogi",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('retorna false', function () {",
+                  "    pm.expect(pm.response.json()).to.eql(false);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p11"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773380"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/availability/p11?cep=08773380"
+            }
+          }
+        },
+        {
+          "name": "Disponível - p11 (Recife) + CEP de Recife",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('retorna true', function () {",
+                  "    pm.expect(pm.response.json()).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p11"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "52390190"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/availability/p11?cep=52390190"
+            }
+          }
+        },
+        {
+          "name": "Disponível - p19 (Porto Alegre) + CEP de Porto Alegre",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('retorna true', function () {",
+                  "    pm.expect(pm.response.json()).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p19"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "90020011"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/availability/p19?cep=90020011"
+            }
+          }
+        },
+        {
+          "name": "Erro - CEP mal formatado (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "123"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/availability/p1?cep=123"
+            }
+          }
+        },
+        {
+          "name": "Erro - CEP com letras (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "0877A380"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/availability/p1?cep=0877A380"
+            }
+          }
+        },
+        {
+          "name": "Erro - CEP inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "99999999"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/availability/p1?cep=99999999"
+            }
+          }
+        },
+        {
+          "name": "Erro - produto inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "nao-existe"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773380"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/availability/nao-existe?cep=08773380"
+            }
+          }
+        },
+        {
+          "name": "Erro - sem o parâmetro cep (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "raw": "{{baseUrl}}/product/availability/p1"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Consultas - Aula 3",
+      "item": [
+        {
+          "name": "Por categoria (Derived Query)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "electronics"
+                }
+              ],
+              "raw": "{{baseUrl}}/product?category=electronics"
+            }
+          }
+        },
+        {
+          "name": "Por preço mínimo (GreaterThan)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "query": [
+                {
+                  "key": "minPrice",
+                  "value": "20000"
+                }
+              ],
+              "raw": "{{baseUrl}}/product?minPrice=20000"
+            }
+          }
+        },
+        {
+          "name": "Por nome (JPQL)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "query": [
+                {
+                  "key": "nameContains",
+                  "value": "SMART"
+                }
+              ],
+              "raw": "{{baseUrl}}/product?nameContains=SMART"
+            }
+          }
+        },
+        {
+          "name": "Top 3 mais caros (classe de modelo)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('retorna 3 produtos', function () {",
+                  "    pm.expect(pm.response.json().length).to.eql(3);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "top-expensive"
+              ],
+              "raw": "{{baseUrl}}/product/top-expensive"
+            }
+          }
+        },
+        {
+          "name": "Por centro de distribuição e categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "distribution-center",
+                "Recife"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "electronics"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/distribution-center/Recife?category=electronics"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Centro de distribuição - Aulas 1 e 2",
+      "item": [
+        {
+          "name": "Por centro de distribuição",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "distribution-center",
+                "Mogi%20das%20Cruzes"
+              ],
+              "raw": "{{baseUrl}}/product/distribution-center/Mogi%20das%20Cruzes"
+            }
+          }
+        },
+        {
+          "name": "Por centro de distribuição (nome em maiúsculas também é aceito)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "distribution-center",
+                "PORTO_ALEGRE"
+              ],
+              "raw": "{{baseUrl}}/product/distribution-center/PORTO_ALEGRE"
+            }
+          }
+        },
+        {
+          "name": "Por estado (SP → Mogi das Cruzes)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "distribution-center",
+                "SP"
+              ],
+              "raw": "{{baseUrl}}/product/distribution-center/SP"
+            }
+          }
+        },
+        {
+          "name": "Por estado sem centro (RJ → lista vazia)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('lista vazia', function () {",
+                  "    pm.expect(pm.response.json().length).to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "distribution-center",
+                "RJ"
+              ],
+              "raw": "{{baseUrl}}/product/distribution-center/RJ"
+            }
+          }
+        },
+        {
+          "name": "Erro - cidade/estado inválido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "distribution-center",
+                "XX"
+              ],
+              "raw": "{{baseUrl}}/product/distribution-center/XX"
+            }
+          }
+        },
+        {
+          "name": "Contagem por centro (bônus)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "distribution-center",
+                "count"
+              ],
+              "raw": "{{baseUrl}}/product/distribution-center/count"
+            }
+          }
+        },
+        {
+          "name": "Contagem por estado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "distribution-center",
+                "count",
+                "state"
+              ],
+              "raw": "{{baseUrl}}/product/distribution-center/count/state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Consultas - Aula 1",
+      "item": [
+        {
+          "name": "endpoint1 - por categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "endpoint1"
+              ],
+              "query": [
+                {
+                  "key": "categoryAsParam",
+                  "value": "home"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/endpoint1?categoryAsParam=home"
+            }
+          }
+        },
+        {
+          "name": "endpoint2 - por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "endpoint2",
+                "p1"
+              ],
+              "raw": "{{baseUrl}}/product/endpoint2/p1"
+            }
+          }
+        },
+        {
+          "name": "endpoint2 - id inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "endpoint2",
+                "nao-existe"
+              ],
+              "raw": "{{baseUrl}}/product/endpoint2/nao-existe"
+            }
+          }
+        },
+        {
+          "name": "endpoint3 - top 5 por preço",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('retorna 5 produtos', function () {",
+                  "    pm.expect(pm.response.json().length).to.eql(5);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "endpoint3",
+                "top5byprice"
+              ],
+              "raw": "{{baseUrl}}/product/endpoint3/top5byprice"
+            }
+          }
+        },
+        {
+          "name": "category - Path, Param, Header e Body",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "categoryAsHeader",
+                "value": "clothes"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "category",
+                "clothes"
+              ],
+              "query": [
+                {
+                  "key": "categoryAsParam",
+                  "value": "clothes"
+                }
+              ],
+              "raw": "{{baseUrl}}/product/category/clothes?categoryAsParam=clothes"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"clothes\"\n}"
+            }
+          },
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. CRUD",
+      "item": [
+        {
+          "name": "Listar produtos ativos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "raw": "{{baseUrl}}/product"
+            }
+          }
+        },
+        {
+          "name": "Criar produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "raw": "{{baseUrl}}/product"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cadeira Gamer\",\n  \"price\": 89900,\n  \"category\": \"furniture\",\n  \"distributionCenter\": \"Recife\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Erro - criar sem distributionCenter (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "raw": "{{baseUrl}}/product"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cadeira Gamer\",\n  \"price\": 89900,\n  \"category\": \"furniture\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Erro - criar com distributionCenter inválido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "raw": "{{baseUrl}}/product"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cadeira Gamer\",\n  \"price\": 89900,\n  \"category\": \"furniture\",\n  \"distributionCenter\": \"SP\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Erro - criar sem nome (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "raw": "{{baseUrl}}/product"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"price\": 89900,\n  \"category\": \"furniture\",\n  \"distributionCenter\": \"Recife\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "raw": "{{baseUrl}}/product"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"p1\",\n  \"name\": \"Football Jersey\",\n  \"price\": 5500,\n  \"category\": \"clothes\",\n  \"distributionCenter\": \"Mogi das Cruzes\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Erro - atualizar id inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "raw": "{{baseUrl}}/product"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"nao-existe\",\n  \"name\": \"Teste\",\n  \"price\": 1000,\n  \"category\": \"clothes\",\n  \"distributionCenter\": \"Recife\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Inativar produto ({{productId}})",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "{{productId}}"
+              ],
+              "raw": "{{baseUrl}}/product/{{productId}}"
+            }
+          }
+        },
+        {
+          "name": "Erro - inativar id inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "nao-existe"
+              ],
+              "raw": "{{baseUrl}}/product/nao-existe"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
