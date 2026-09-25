@@ -1,0 +1,659 @@
+{
+  "info": {
+    "name": "Produtos - ViaCEP (Atividade M1)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Testes da API de produtos: CRUD e consultas (Aulas 1 a 3) e integracao com a ViaCEP (Aula 4)."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "createdId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. CRUD",
+      "item": [
+        {
+          "name": "Criar produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"createdId\", pm.response.json().id);",
+                  "pm.test(\"Salvou o centro de distribuicao\", function () { pm.expect(pm.response.json().distributionCenter).to.eql(\"Recife\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-User",
+                "value": "joao"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Headset HyperX Cloud II\",\n  \"description\": \"Headset gamer 7.1\",\n  \"category\": \"audio\",\n  \"price\": 499.9,\n  \"distributionCenter\": \"Recife\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar produtos ativos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{createdId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{createdId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Headset HyperX Cloud II\",\n  \"description\": \"Headset gamer 7.1 (promocao)\",\n  \"category\": \"audio\",\n  \"price\": 459.9,\n  \"distributionCenter\": \"Recife\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Inativar produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{createdId}}/inactivate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{createdId}}",
+                "inactivate"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar produto inativado (continua no banco, active = false)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Esta inativo\", function () { pm.expect(pm.response.json().active).to.eql(false); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{createdId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{createdId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Consultas",
+      "item": [
+        {
+          "name": "Buscar por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/p1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "p1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products?category=livros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "livros"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Top 5 por preco",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Retorna 5 itens\", function () { pm.expect(pm.response.json().length).to.eql(5); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/top5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "top5"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Validacoes e erros",
+      "item": [
+        {
+          "name": "Produto inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/nao-existe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "nao-existe"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar com dados invalidos (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-User",
+                "value": "joao"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"category\": \"audio\",\n  \"price\": -10,\n  \"distributionCenter\": \"Manaus\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Criar sem header X-User (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Headset HyperX Cloud II\",\n  \"description\": \"Headset gamer 7.1\",\n  \"category\": \"audio\",\n  \"price\": 499.9,\n  \"distributionCenter\": \"Recife\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Aula 4 - Disponibilidade (ViaCEP)",
+      "item": [
+        {
+          "name": "Disponivel - p1 (Mogi) + CEP de Mogi",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"available = true\", function () { pm.expect(pm.response.json().available).to.eql(true); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/p1/availability?cep=08773380",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "p1",
+                "availability"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773380"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Indisponivel - p2 (Recife) + CEP de Mogi",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"available = false\", function () { pm.expect(pm.response.json().available).to.eql(false); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/p2/availability?cep=08773-380",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "p2",
+                "availability"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773-380"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Indisponivel - p1 (Mogi) + CEP de Sao Paulo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"available = false\", function () { pm.expect(pm.response.json().available).to.eql(false); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/p1/availability?cep=01001000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "p1",
+                "availability"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "01001000"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "CEP inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/p1/availability?cep=99999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "p1",
+                "availability"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "99999999"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "CEP mal formatado (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/p1/availability?cep=123",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "p1",
+                "availability"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sem CEP (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/p1/availability",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "p1",
+                "availability"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Produto inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/xyz/availability?cep=08773380",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "xyz",
+                "availability"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773380"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
