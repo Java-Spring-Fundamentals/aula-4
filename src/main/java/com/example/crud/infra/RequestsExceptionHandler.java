@@ -2,6 +2,7 @@ package com.example.crud.infra;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -10,6 +11,18 @@ public class RequestsExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ExceptionDTO> threat404(){
         ExceptionDTO response = new ExceptionDTO("Data not found with provided ID", 404);
+        return ResponseEntity.status(404).body(response);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionDTO> threatInvalidBody(){
+        ExceptionDTO response = new ExceptionDTO("Invalid request body, distributionCenter must be RJ, MG or SP", 400);
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(ViaCepException.class)
+    public ResponseEntity<ExceptionDTO> threatViaCep(ViaCepException exception){
+        ExceptionDTO response = new ExceptionDTO(exception.getMessage(), exception.getStatus().value());
+        return ResponseEntity.status(exception.getStatus()).body(response);
     }
 }
