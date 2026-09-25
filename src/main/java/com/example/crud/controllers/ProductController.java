@@ -4,10 +4,11 @@ import com.example.crud.domain.product.Product;
 import com.example.crud.domain.product.ProductRepository;
 import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.RequestProduct;
+import com.example.crud.domain.product.AvailabilityResponse;
 import com.example.crud.service.AddressSearch;
+import com.example.crud.service.AvailabilityService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +22,15 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
-    @Autowired
-    private ProductRepository repository;
+    private final ProductRepository repository;
     private final AddressSearch addressSearch;
+    private final AvailabilityService availabilityService;
 
-    @Autowired
-    public ProductController(ProductRepository repository, AddressSearch addressSearch) {
+    public ProductController(ProductRepository repository, AddressSearch addressSearch,
+                             AvailabilityService availabilityService) {
         this.repository = repository;
         this.addressSearch = addressSearch;
+        this.availabilityService = availabilityService;
     }
 
     @GetMapping
@@ -37,8 +39,17 @@ public class ProductController {
         return ResponseEntity.ok(allProducts);
     }
 
+    // Verifica se o produto está disponível na cidade do CEP informado.
+    // Ex.: GET /product/availability/p1?cep=08773380
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<AvailabilityResponse> checkAvailability(@PathVariable String id,
+                                                                  @RequestParam String cep) {
+        AvailabilityResponse response = availabilityService.checkAvailability(id, cep);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/cep")
-    public ResponseEntity<String> verifyAvailability(@RequestParam String state, @RequestParam String city, @RequestParam String street){
+    public ResponseEntity<String> searchCepByAddress(@RequestParam String state, @RequestParam String city, @RequestParam String street){
         String cep = addressSearch.searchAddress(state, city, street);
         return ResponseEntity.ok(cep);
     }
@@ -50,9 +61,10 @@ public class ProductController {
     }
 
     @GetMapping("/endpoint2/{id}") //only one product
-    public ResponseEntity<Optional<Product>> getProduct(@PathVariable String id){
-        Optional<Product> optionalProduct = repository.findById(id);
-        return ResponseEntity.ok(optionalProduct);
+    public ResponseEntity<Product> getProduct(@PathVariable String id){
+        Product product = repository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/endpoint3/top5byprice") // top 5 product by price
@@ -97,11 +109,14 @@ public class ProductController {
     @PutMapping
     @Transactional
     public ResponseEntity<Product> updateProduct(@RequestBody @Valid RequestProduct data){
-        Optional<Product> optionalProduct = repository.findById(data.id());
+        // Sem id no corpo não há o que atualizar: responde 404 em vez de estourar erro 500
+        Optional<Product> optionalProduct = data.id() == null ? Optional.empty() : repository.findById(data.id());
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
             product.setName(data.name());
             product.setPrice(data.price());
+            product.setCategory(data.category());
+            product.setDistributionCenter(data.distributionCenter());
             return ResponseEntity.ok(product);
         } else {
             throw new EntityNotFoundException();

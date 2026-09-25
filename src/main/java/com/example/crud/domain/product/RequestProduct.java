@@ -2,8 +2,7 @@ package com.example.crud.domain.product;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.UUID;
+import jakarta.validation.constraints.Pattern;
 
 public record RequestProduct(
         String id,
@@ -15,6 +14,10 @@ public record RequestProduct(
         @NotBlank
         String category,
         @NotBlank
+        @Pattern(
+                regexp = "Mogi das Cruzes|Recife|Porto Alegre",
+                message = "deve ser um dos centros de distribuição: Mogi das Cruzes, Recife ou Porto Alegre"
+        )
         String distributionCenter
 ) {
 }

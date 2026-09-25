@@ -3,8 +3,6 @@ package com.example.crud.domain.product;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 @Table(name="product")
 @Entity(name="product")
 @Getter
@@ -24,13 +22,16 @@ public class Product {
 
     private String category;
 
-    private String distribution_center;
+    // No Java o atributo segue o padrão camelCase; o @Column liga ele
+    // à coluna distribution_center criada na migration V5.
+    @Column(name = "distribution_center")
+    private String distributionCenter;
 
     public Product(RequestProduct requestProduct){
         this.name = requestProduct.name();
         this.price = requestProduct.price();
         this.category = requestProduct.category();
+        this.distributionCenter = requestProduct.distributionCenter();
         this.active = true;
-        this.distribution_center = requestProduct.distributionCenter();
     }
 }
