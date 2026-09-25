@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/produtos/{{produtoId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "name": "Mouse sem fio Pro",
+      "category": "Eletronicos",
+      "price": 149.90,
+      "distributionCenter": "Recife"
+    }
+order: 6000

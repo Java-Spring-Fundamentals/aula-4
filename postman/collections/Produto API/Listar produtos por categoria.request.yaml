@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/produtos?categoria=Eletronicos"
+method: GET
+queryParams:
+  categoria: Eletronicos
+order: 3000

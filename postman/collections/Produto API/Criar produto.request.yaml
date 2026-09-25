@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/produtos"
+method: POST
+headers:
+  Content-Type: application/json
+  X-Origem-Requisicao: postman
+body:
+  type: text
+  content: |-
+    {
+      "name": "Mouse sem fio",
+      "category": "Eletronicos",
+      "price": 129.90,
+      "distributionCenter": "Mogi das Cruzes"
+    }
+order: 1000
