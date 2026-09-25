@@ -5,6 +5,7 @@ import com.example.crud.domain.product.ProductRepository;
 import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.RequestProduct;
 import com.example.crud.service.AddressSearch;
+import com.example.crud.service.ProductAvailabilityService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,19 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
     private final AddressSearch addressSearch;
+    private final ProductAvailabilityService availabilityService;
 
     @Autowired
-    public ProductController(ProductRepository repository, AddressSearch addressSearch) {
+    public ProductController(ProductRepository repository, AddressSearch addressSearch,
+                             ProductAvailabilityService availabilityService) {
         this.repository = repository;
         this.addressSearch = addressSearch;
+        this.availabilityService = availabilityService;
+    }
+
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<Boolean> checkAvailability(@PathVariable String id, @RequestParam String cep) {
+        return ResponseEntity.ok(availabilityService.isAvailable(id, cep));
     }
 
     @GetMapping

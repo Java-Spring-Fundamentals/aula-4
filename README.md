@@ -56,3 +56,16 @@ As migrations ficam em `src/main/resources/db/migration` e são versionadas
 pelo Flyway (`V1` a `V5`). A tabela `product` tem, entre outros, o campo
 `distribution_center`, usado pelo endpoint de disponibilidade para comparar
 com a cidade retornada pela ViaCEP.
+
+## Teste de disponibilidade
+
+Use `GET /product/availability/{id}?cep=08773380`. Para o produto `p1`,
+cujo centro de distribuição é Mogi das Cruzes, a resposta é `true` quando
+o CEP corresponde à cidade. Outra cidade retorna `false` (HTTP 200).
+O CEP aceita oito dígitos, com ou sem hífen. CEP mal formatado retorna 400,
+CEP inexistente ou produto inexistente retorna 404, e falha na ViaCEP retorna
+502. A chamada externa tem limites de 3 segundos para conexão e leitura.
+
+Importe `postman/integration-viacep.postman_collection.json` no Postman para
+executar os cenários. A collection usa `http://localhost:8080` e o produto
+inicial `p1`; ajuste as variáveis `baseUrl` e `productId` quando necessário.
