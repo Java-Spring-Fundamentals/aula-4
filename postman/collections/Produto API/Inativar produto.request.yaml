@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{baseUrl}}/produtos/{{produtoId}}/inativar"
+method: PATCH
+order: 7000

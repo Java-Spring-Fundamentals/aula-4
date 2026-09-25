@@ -1,0 +1,123 @@
+{
+  "info": {
+    "name": "Produto API",
+    "_postman_id": "b7f2a6d0-1234-4a5b-8f21-a1b2c3d4e5f6",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "produtoId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Criar produto",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-Origem-Requisicao", "value": "postman" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Mouse sem fio\",\n  \"category\": \"Eletronicos\",\n  \"price\": 129.90,\n  \"distributionCenter\": \"Mogi das Cruzes\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/produtos", "host": ["{{baseUrl}}"], "path": ["produtos"] }
+      }
+    },
+    {
+      "name": "Listar produtos",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/produtos", "host": ["{{baseUrl}}"], "path": ["produtos"] }
+      }
+    },
+    {
+      "name": "Listar produtos por categoria",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/produtos?categoria=Eletronicos",
+          "host": ["{{baseUrl}}"],
+          "path": ["produtos"],
+          "query": [{ "key": "categoria", "value": "Eletronicos" }]
+        }
+      }
+    },
+    {
+      "name": "Top 5 produtos por preco",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/produtos/top5", "host": ["{{baseUrl}}"], "path": ["produtos", "top5"] }
+      }
+    },
+    {
+      "name": "Buscar produto por id",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/produtos/{{produtoId}}", "host": ["{{baseUrl}}"], "path": ["produtos", "{{produtoId}}"] }
+      }
+    },
+    {
+      "name": "Atualizar produto",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Mouse sem fio Pro\",\n  \"category\": \"Eletronicos\",\n  \"price\": 149.90,\n  \"distributionCenter\": \"Recife\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/produtos/{{produtoId}}", "host": ["{{baseUrl}}"], "path": ["produtos", "{{produtoId}}"] }
+      }
+    },
+    {
+      "name": "Inativar produto",
+      "request": {
+        "method": "PATCH",
+        "url": { "raw": "{{baseUrl}}/produtos/{{produtoId}}/inativar", "host": ["{{baseUrl}}"], "path": ["produtos", "{{produtoId}}", "inativar"] }
+      }
+    },
+    {
+      "name": "Disponibilidade - mesma cidade do centro",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/produtos/{{produtoId}}/disponibilidade?cep=08773380",
+          "host": ["{{baseUrl}}"],
+          "path": ["produtos", "{{produtoId}}", "disponibilidade"],
+          "query": [{ "key": "cep", "value": "08773380" }]
+        }
+      }
+    },
+    {
+      "name": "Disponibilidade - CEP inexistente",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/produtos/{{produtoId}}/disponibilidade?cep=99999999",
+          "host": ["{{baseUrl}}"],
+          "path": ["produtos", "{{produtoId}}", "disponibilidade"],
+          "query": [{ "key": "cep", "value": "99999999" }]
+        }
+      }
+    },
+    {
+      "name": "Disponibilidade - CEP mal formatado",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/produtos/{{produtoId}}/disponibilidade?cep=123",
+          "host": ["{{baseUrl}}"],
+          "path": ["produtos", "{{produtoId}}", "disponibilidade"],
+          "query": [{ "key": "cep", "value": "123" }]
+        }
+      }
+    },
+    {
+      "name": "Produto nao encontrado",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/produtos/99999", "host": ["{{baseUrl}}"], "path": ["produtos", "99999"] }
+      }
+    }
+  ]
+}

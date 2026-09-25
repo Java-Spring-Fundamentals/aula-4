@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/produtos/{{produtoId}}/disponibilidade?cep=123"
+method: GET
+queryParams:
+  cep: "123"
+order: 10000

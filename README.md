@@ -1,58 +1,66 @@
-# integration-viacep
+# Produto API
 
-API REST em Java + Spring Boot para cadastro de produtos, com um endpoint de
-integração com o serviço [ViaCEP](https://viacep.com.br/) para verificar a
-disponibilidade de um produto em determinada cidade a partir de um CEP.
+API REST em Spring Boot para cadastro de produtos, com uma integração extra: dado um CEP e o id de um produto, ela consulta o ViaCEP e diz se aquele produto está disponível na cidade correspondente ao CEP (comparando com o centro de distribuição do produto).
 
-## Stack
+## Pré-requisitos
 
 - Java 17
-- Spring Boot 3 (Web, Data JPA, Validation)
-- PostgreSQL
-- Flyway (migrations)
-- Maven
+- Docker (para subir o PostgreSQL)
+- Maven (opcional, o projeto já vem com o `mvnw`)
 
 ## Como rodar
 
-1. Suba o banco com Docker:
+1. Suba o banco de dados:
 
-   ```
-   docker-compose up -d
-   ```
+```bash
+docker compose up -d
+```
 
-   Isso cria um Postgres em `localhost:5432` (banco `product`, usuário
-   `postgres`, senha `password`) e um pgAdmin em `localhost:15432`.
+2. Rode a aplicação:
 
-2. Confira se `src/main/resources/application.properties` aponta para o
-   mesmo banco/usuário/senha do `docker-compose.yml`.
+```bash
+./mvnw spring-boot:run
+```
 
-3. Rode a aplicação:
+No Windows, use `mvnw.cmd spring-boot:run`.
 
-   ```
-   ./mvnw spring-boot:run
-   ```
+O Flyway cria a tabela `product` automaticamente e já popula com alguns produtos de exemplo, distribuídos entre os três centros de distribuição (Mogi das Cruzes, Recife e Porto Alegre).
 
-   O Flyway aplica as migrations automaticamente na subida. A API fica
-   disponível em `http://localhost:8080`.
+A aplicação sobe em `http://localhost:8080`.
 
-## Endpoints principais
+## Endpoints
 
-| Método | Rota                              | Descrição                                              |
-|--------|------------------------------------|---------------------------------------------------------|
-| GET    | `/product`                         | Lista todos os produtos ativos                          |
-| POST   | `/product`                         | Cadastra um novo produto                                 |
-| PUT    | `/product`                         | Atualiza nome/preço de um produto                        |
-| DELETE | `/product/{id}`                    | Inativa um produto (soft delete)                         |
-| GET    | `/product/availability/{id}`       | Verifica se o CEP informado pertence ao `distribution_center` do produto |
-| GET    | `/product/endpoint1`               | Lista produtos por categoria (`categoryAsParam`)          |
-| GET    | `/product/endpoint2/{id}`          | Busca um produto por id                                   |
-| GET    | `/product/endpoint3/top5byprice`   | Top 5 produtos por preço                                   |
-| GET    | `/product/category/{categoryAsPath}` | Exemplo combinando Path, Param, Header e Body            |
-| GET    | `/product/cep`                     | Busca CEP a partir de estado/cidade/rua (uso didático à parte)       |
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/produtos` | Cria um produto |
+| GET | `/produtos` | Lista todos os produtos (aceita `?categoria=` como filtro) |
+| GET | `/produtos/top5` | Retorna os 5 produtos ativos mais caros |
+| GET | `/produtos/{id}` | Busca um produto pelo id |
+| PUT | `/produtos/{id}` | Atualiza um produto |
+| PATCH | `/produtos/{id}/inativar` | Inativa um produto (soft delete) |
+| GET | `/produtos/{id}/disponibilidade?cep=00000000` | Consulta o ViaCEP e compara a cidade do CEP com o centro de distribuição do produto |
 
-## Estrutura do banco
+### Exemplo de corpo para criar/atualizar produto
 
-As migrations ficam em `src/main/resources/db/migration` e são versionadas
-pelo Flyway (`V1` a `V5`). A tabela `product` tem, entre outros, o campo
-`distribution_center`, usado pelo endpoint de disponibilidade para comparar
-com a cidade retornada pela ViaCEP.
+```json
+{
+  "name": "Mouse sem fio",
+  "category": "Eletronicos",
+  "price": 129.90,
+  "distributionCenter": "Mogi das Cruzes"
+}
+```
+
+`distributionCenter` só aceita: `Mogi das Cruzes`, `Recife` ou `Porto Alegre`.
+
+### Tratamento de erros
+
+- CEP mal formatado → `400 Bad Request`
+- CEP que não existe → `400 Bad Request`
+- ViaCEP fora do ar / timeout → `503 Service Unavailable`
+- Produto não encontrado → `404 Not Found`
+- Dados inválidos no corpo da requisição → `400 Bad Request` com o detalhe de cada campo
+
+## Postman
+
+A collection usada nos testes está em `postman/produto-api.postman_collection.json`. Ela já cobre o fluxo feliz e os cenários de erro (CEP inválido, CEP inexistente e produto não encontrado). Basta importar no Postman; a variável `baseUrl` já vem configurada para `http://localhost:8080`.
