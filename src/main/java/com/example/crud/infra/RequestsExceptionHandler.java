@@ -1,9 +1,6 @@
 package com.example.crud.infra;
 
-import com.example.crud.infra.exception.CepNotFoundException;
-import com.example.crud.infra.exception.InvalidCepException;
-import com.example.crud.infra.exception.ProductNotFoundException;
-import com.example.crud.infra.exception.ViaCepUnavailableException;
+import com.example.crud.infra.exception.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +18,15 @@ import java.util.Map;
 @RestControllerAdvice
 public class RequestsExceptionHandler {
 
-    @ExceptionHandler({ProductNotFoundException.class, CepNotFoundException.class})
-    public ResponseEntity<ExceptionDTO> handleNotFound(
-            RuntimeException exception,
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ExceptionDTO> handleApiException(
+            ApiException exception,
             HttpServletRequest request
     ) {
-        return build(HttpStatus.NOT_FOUND, exception.getMessage(), request);
+        return build(exception.getStatus(), exception.getMessage(), request);
     }
 
     @ExceptionHandler({
-            InvalidCepException.class,
             IllegalArgumentException.class,
             MissingServletRequestParameterException.class,
             MissingRequestHeaderException.class,
@@ -59,14 +55,6 @@ public class RequestsExceptionHandler {
                 fields
         );
         return ResponseEntity.badRequest().body(body);
-    }
-
-    @ExceptionHandler(ViaCepUnavailableException.class)
-    public ResponseEntity<ExceptionDTO> handleViaCepUnavailable(
-            ViaCepUnavailableException exception,
-            HttpServletRequest request
-    ) {
-        return build(HttpStatus.SERVICE_UNAVAILABLE, exception.getMessage(), request);
     }
 
     private ResponseEntity<ExceptionDTO> build(

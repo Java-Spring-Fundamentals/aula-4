@@ -4,7 +4,8 @@ import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.Product;
 import com.example.crud.domain.product.ProductRepository;
 import com.example.crud.domain.product.RequestProduct;
-import com.example.crud.infra.exception.ProductNotFoundException;
+import com.example.crud.infra.exception.ApiException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,7 @@ public class ProductService {
 
     public Product findActiveById(String id) {
         return repository.findByIdAndActiveTrue(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Produto não encontrado: " + id));
     }
 
     public List<Product> findByCategory(String category) {

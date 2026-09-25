@@ -1,119 +1,69 @@
-# Integração ViaCEP
+# integration-viacep
 
-API REST para cadastro de produtos e verificação de disponibilidade por cidade. O projeto consulta a ViaCEP, descobre a cidade do CEP informado e compara com o centro de distribuição do produto.
+API REST em Java + Spring Boot para cadastro de produtos, com um endpoint de
+integração com o serviço [ViaCEP](https://viacep.com.br/) para verificar a
+disponibilidade de um produto em determinada cidade a partir de um CEP.
 
-## Identificação
+Alyne Rodrigues de Campos  
+RGM: 11231100534  
+Sistemas de Informação - 8ºB
 
-- Aluna: Alyne Rodrigues de Campos
-- RGM: 11231100534
-- Turma: 8ºB S.I.
-
-## Tecnologias
+## Stack
 
 - Java 17
-- Spring Boot 3
-- Spring Web, Data JPA e Validation
+- Spring Boot 3 (Web, Data JPA, Validation)
 - PostgreSQL
-- Flyway
+- Flyway (migrations)
 - Maven
-- JUnit e Mockito
 
-## Como executar
+## Como rodar
 
-Pré-requisito para a forma mais simples: Docker Desktop.
+1. Suba o banco com Docker:
 
-1. Suba a aplicação, o PostgreSQL e o pgAdmin:
-
-   ```bash
-   docker compose up --build -d
+   ```
+   docker-compose up -d
    ```
 
-2. A API ficará disponível em `http://localhost:8080`.
+   Isso cria um Postgres em `localhost:5432` (banco `product`, usuário
+   `postgres`, senha `password`) e um pgAdmin em `localhost:15432`.
 
-O Flyway cria a tabela, insere os produtos iniciais e adiciona o campo `distribution_center` automaticamente. Nenhum script precisa ser executado manualmente.
+2. Confira se `src/main/resources/application.properties` aponta para o
+   mesmo banco/usuário/senha do `docker-compose.yml`.
 
-Para executar a aplicação pelo VS Code, suba apenas os serviços de apoio:
+3. Rode a aplicação:
 
-```bash
-docker compose up -d db pgadmin
-```
+   ```
+   ./mvnw spring-boot:run
+   ```
 
-Depois inicie a aplicação com Java 17:
+   O Flyway aplica as migrations automaticamente na subida. A API fica
+   disponível em `http://localhost:8080`.
 
-No Windows:
-
-```bash
-mvnw.cmd spring-boot:run
-```
-
-No Linux ou macOS:
-
-```bash
-./mvnw spring-boot:run
-```
-
-O banco usa as seguintes configurações:
-
-- banco: `product`
-- usuário: `postgres`
-- senha: `password`
-- porta: `5432`
-
-O pgAdmin fica disponível em `http://localhost:15432`, com usuário `admin@admin.com` e senha `root123`.
-
-## Endpoints
+## Endpoints principais
 
 | Método | Rota | Descrição |
-| --- | --- | --- |
+|--------|------|-----------|
 | GET | `/product` | Lista os produtos ativos |
-| GET | `/product/{id}` | Busca um produto ativo por id |
+| GET | `/product/{id}` | Busca um produto por id |
 | POST | `/product` | Cadastra um produto |
 | PUT | `/product/{id}` | Atualiza um produto |
 | DELETE | `/product/{id}` | Inativa um produto |
-| GET | `/product/category/{category}` | Filtra produtos ativos por categoria |
-| GET | `/product/top5-by-price` | Retorna os cinco produtos ativos mais caros |
+| GET | `/product/category/{category}` | Lista produtos por categoria |
+| GET | `/product/top5-by-price` | Retorna os cinco produtos de maior preço |
 | GET | `/product/availability/{id}?cep={cep}` | Verifica a disponibilidade pela cidade do CEP |
-| POST | `/product/category/{categoryPath}/filter?categoryParam={category}` | Exercício com Path Variable, Request Param, Request Header e Request Body |
+| POST | `/product/category/{categoryPath}/filter` | Exemplo com Path, Param, Header e Body |
+| GET | `/product/cep` | Busca CEP a partir de estado, cidade e rua |
 
-### Cadastrar ou atualizar um produto
+O endpoint de disponibilidade trata CEP inválido, CEP inexistente, produto não
+encontrado, timeout e falhas na comunicação com o serviço externo.
 
-```json
-{
-  "name": "Teclado mecânico",
-  "price": 35000,
-  "category": "electronics",
-  "distributionCenter": "Mogi das Cruzes"
-}
-```
+## Estrutura do banco
 
-Os centros de distribuição aceitos são `Mogi das Cruzes`, `Recife` e `Porto Alegre`.
-
-### Verificar disponibilidade
-
-```http
-GET /product/availability/p1?cep=08773380
-```
-
-O retorno é `true` quando a cidade informada pela ViaCEP é igual ao centro de distribuição do produto e `false` quando é diferente.
-
-O serviço também trata os seguintes cenários:
-
-- CEP fora do formato esperado: status `400`;
-- produto ou CEP inexistente: status `404`;
-- timeout, indisponibilidade ou resposta inválida da ViaCEP: status `503`.
-
-As chamadas externas têm timeout de conexão de 2 segundos e timeout de leitura de 3 segundos. Esses valores e a URL da ViaCEP podem ser alterados no `application.properties`.
-
-## Testes
-
-Execute:
-
-```bash
-mvnw.cmd test
-```
-
-Os testes cobrem a validação do endpoint, a comparação entre cidade e centro de distribuição, CEP válido, CEP inválido, CEP inexistente e indisponibilidade da ViaCEP.
+As migrations ficam em `src/main/resources/db/migration` e são versionadas
+pelo Flyway (`V1` a `V5`). A tabela `product` tem, entre outros, o campo
+`distribution_center`, usado pelo endpoint de disponibilidade para comparar
+com a cidade retornada pela ViaCEP.
 
 ## Postman
 
-Importe o arquivo `postman/Atividade_M1_ViaCEP.postman_collection.json`. A collection contém o CRUD, os filtros, os exemplos dos componentes HTTP e os principais cenários da integração.
+A collection utilizada nos testes está na pasta `postman`.

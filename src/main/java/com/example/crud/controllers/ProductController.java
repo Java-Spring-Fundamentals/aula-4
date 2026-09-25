@@ -3,8 +3,9 @@ package com.example.crud.controllers;
 import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.Product;
 import com.example.crud.domain.product.RequestProduct;
-import com.example.crud.service.AvailabilityService;
+import com.example.crud.service.AddressSearch;
 import com.example.crud.service.ProductService;
+import com.example.crud.service.ViaCepService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,11 +28,17 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final AvailabilityService availabilityService;
+    private final ViaCepService viaCepService;
+    private final AddressSearch addressSearch;
 
-    public ProductController(ProductService productService, AvailabilityService availabilityService) {
+    public ProductController(
+            ProductService productService,
+            ViaCepService viaCepService,
+            AddressSearch addressSearch
+    ) {
         this.productService = productService;
-        this.availabilityService = availabilityService;
+        this.viaCepService = viaCepService;
+        this.addressSearch = addressSearch;
     }
 
     @GetMapping
@@ -59,7 +66,16 @@ public class ProductController {
             @PathVariable String id,
             @RequestParam String cep
     ) {
-        return ResponseEntity.ok(availabilityService.isAvailable(id, cep));
+        return ResponseEntity.ok(viaCepService.isAvailable(id, cep));
+    }
+
+    @GetMapping("/cep")
+    public ResponseEntity<String> findCep(
+            @RequestParam String state,
+            @RequestParam String city,
+            @RequestParam String street
+    ) {
+        return ResponseEntity.ok(addressSearch.searchAddress(state, city, street));
     }
 
     @PostMapping("/category/{categoryPath}/filter")
