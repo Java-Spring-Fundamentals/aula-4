@@ -43,6 +43,18 @@ public class ProductController {
         return ResponseEntity.ok(cep);
     }
 
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<Boolean> checkAvailability(@PathVariable String id, @RequestParam String cep){
+        Optional<Product> optionalProduct = repository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            boolean available = addressSearch.checkAvailability(cep, product.getDistribution_center());
+            return ResponseEntity.ok(available);
+        } else {
+            throw new EntityNotFoundException();
+        }
+    }
+
     @GetMapping("/endpoint1") //products from only one category
     public ResponseEntity<List<Product>> getAllProducts1(@RequestParam String categoryAsParam){
         var allProducts = repository.findAllByCategory(categoryAsParam);
