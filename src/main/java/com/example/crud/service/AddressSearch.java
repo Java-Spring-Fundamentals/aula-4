@@ -13,7 +13,6 @@ import java.util.Map;
 
 @Service
 public class AddressSearch {
-
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
@@ -24,14 +23,12 @@ public class AddressSearch {
 
     public String searchAddress(String state, String city, String street) {
         String url = "https://viacep.com.br/ws/{state}/{city}/{street}/json/";
-
         Map<String, String> uriVariables = new HashMap<>();
         uriVariables.put("state", state);
         uriVariables.put("city", city);
         uriVariables.put("street", street);
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, uriVariables);
-
         try {
             List<Address> addresses = objectMapper.readValue(response.getBody(), objectMapper.getTypeFactory().constructCollectionType(List.class, Address.class));
             String cep = addresses.get(0).getCep();
@@ -40,5 +37,13 @@ public class AddressSearch {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Address searchByCep(String cep) {
+        String url = "https://viacep.com.br/ws/{cep}/json/";
+
+        Address address = restTemplate.getForObject(url, Address.class, cep);
+
+        return address;
     }
 }

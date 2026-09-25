@@ -1,5 +1,4 @@
 package com.example.crud.controllers;
-
 import com.example.crud.domain.product.Product;
 import com.example.crud.domain.product.ProductRepository;
 import com.example.crud.domain.category.RequestCategory;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,11 +22,26 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
     private final AddressSearch addressSearch;
-
     @Autowired
     public ProductController(ProductRepository repository, AddressSearch addressSearch) {
         this.repository = repository;
         this.addressSearch = addressSearch;
+    }
+
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<Boolean> verifyAvailability(@PathVariable String id, @RequestParam String cep){
+        Optional<Product> optionalProduct = repository.findById(id);
+
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            var address = addressSearch.searchByCep(cep);
+
+            Boolean available = product.getDistribution_center().equalsIgnoreCase(address.getLocalidade());
+
+            return ResponseEntity.ok(available);
+        } else {
+            throw new EntityNotFoundException();
+        }
     }
 
     @GetMapping
@@ -36,19 +49,16 @@ public class ProductController {
         var allProducts = repository.findAllByActiveTrue();
         return ResponseEntity.ok(allProducts);
     }
-
     @GetMapping("/cep")
     public ResponseEntity<String> verifyAvailability(@RequestParam String state, @RequestParam String city, @RequestParam String street){
         String cep = addressSearch.searchAddress(state, city, street);
         return ResponseEntity.ok(cep);
     }
-
     @GetMapping("/endpoint1") //products from only one category
     public ResponseEntity<List<Product>> getAllProducts1(@RequestParam String categoryAsParam){
         var allProducts = repository.findAllByCategory(categoryAsParam);
         return ResponseEntity.ok(allProducts);
     }
-
     @GetMapping("/endpoint2/{id}") //only one product
     public ResponseEntity<Optional<Product>> getProduct(@PathVariable String id){
         Optional<Product> optionalProduct = repository.findById(id);
@@ -58,7 +68,6 @@ public class ProductController {
     @GetMapping("/endpoint3/top5byprice") // top 5 product by price
     public ResponseEntity<List<Product>> getAllProducts3(){
         var allProducts = repository.findAllByActiveTrue();
-
         List<Product> topFive = allProducts
                 .stream()
                 .sorted(Comparator.comparingInt(Product::getPrice).reversed())
@@ -67,7 +76,6 @@ public class ProductController {
 
         return ResponseEntity.ok(topFive);
     }
-
     @GetMapping("/category/{categoryAsPath}") //all REST Components
     public ResponseEntity<List<Product>> getProductsByCategory(
             @RequestHeader String categoryAsHeader,
@@ -77,7 +85,6 @@ public class ProductController {
     ){
         var allProducts = repository.findAllByActiveTrue();
         List<Product> filteredProducts = new ArrayList<>();
-
         for (int i = 0; i < allProducts.size(); i++) {
             Product product = allProducts.get(i);
             if (categoryAsParam.equals(product.getCategory())) {
@@ -86,14 +93,12 @@ public class ProductController {
         }
         return ResponseEntity.ok(filteredProducts);
     }
-
     @PostMapping
     public ResponseEntity<Void> registerProduct(@RequestBody @Valid RequestProduct data){
         Product newProduct = new Product(data);
         repository.save(newProduct);
         return ResponseEntity.ok().build();
     }
-
     @PutMapping
     @Transactional
     public ResponseEntity<Product> updateProduct(@RequestBody @Valid RequestProduct data){
@@ -107,7 +112,6 @@ public class ProductController {
             throw new EntityNotFoundException();
         }
     }
-
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> deleteProduct(@PathVariable String id){
