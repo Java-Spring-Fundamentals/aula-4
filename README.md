@@ -43,7 +43,7 @@ disponibilidade de um produto em determinada cidade a partir de um CEP.
 | POST   | `/product`                         | Cadastra um novo produto                                 |
 | PUT    | `/product`                         | Atualiza nome/preço de um produto                        |
 | DELETE | `/product/{id}`                    | Inativa um produto (soft delete)                         |
-| GET    | `/product/availability/{id}`       | Verifica se o CEP informado pertence ao `distribution_center` do produto |
+| GET    | `/product/availability/{id}`       | Verifica se o CEP informado pertence ao `distribution_center` do produto e retorna disponibilidade com uma mensagem ao usuário |
 | GET    | `/product/endpoint1`               | Lista produtos por categoria (`categoryAsParam`)          |
 | GET    | `/product/endpoint2/{id}`          | Busca um produto por id                                   |
 | GET    | `/product/endpoint3/top5byprice`   | Top 5 produtos por preço                                   |
