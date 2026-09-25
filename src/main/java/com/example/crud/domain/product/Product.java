@@ -24,13 +24,14 @@ public class Product {
 
     private String category;
 
-    private String distribution_center;
-
+    @Column(name = "distribution_center")
+    private String distributionCenter;
+    
     public Product(RequestProduct requestProduct){
         this.name = requestProduct.name();
         this.price = requestProduct.price();
         this.category = requestProduct.category();
         this.active = true;
-        this.distribution_center = requestProduct.distributionCenter();
+        this.distributionCenter = requestProduct.distributionCenter();
     }
 }
