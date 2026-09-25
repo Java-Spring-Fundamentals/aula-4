@@ -1,0 +1,308 @@
+{
+  "info": {
+    "name": "Atividade M1 - Integração ViaCEP",
+    "description": "Collection usada para testar o CRUD de produtos (Aulas 1 a 3) e o endpoint de disponibilidade integrado à ViaCEP (Aula 4).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Disponibilidade (Aula 4)",
+      "item": [
+        {
+          "name": "Disponivel - CEP de Mogi das Cruzes x produto p1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1?cep=08773380",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "availability", "p1"],
+              "query": [{ "key": "cep", "value": "08773380" }]
+            },
+            "description": "Produto p1 tem distribution_center 'Mogi das Cruzes'. Esperado: 200 com body true."
+          },
+          "response": []
+        },
+        {
+          "name": "Indisponivel - CEP de Recife x produto p1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1?cep=50010000",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "availability", "p1"],
+              "query": [{ "key": "cep", "value": "50010000" }]
+            },
+            "description": "Cidade do CEP (Recife) difere do distribution_center do produto. Esperado: 200 com body false."
+          },
+          "response": []
+        },
+        {
+          "name": "Disponivel - CEP de Recife x produto p11",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p11?cep=50010000",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "availability", "p11"],
+              "query": [{ "key": "cep", "value": "50010000" }]
+            },
+            "description": "Produto p11 tem distribution_center 'Recife'. Esperado: 200 com body true."
+          },
+          "response": []
+        },
+        {
+          "name": "CEP mal formatado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1?cep=123",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "availability", "p1"],
+              "query": [{ "key": "cep", "value": "123" }]
+            },
+            "description": "Esperado: 400 com mensagem de CEP inválido, sem chamar a ViaCEP."
+          },
+          "response": []
+        },
+        {
+          "name": "CEP inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1?cep=99999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "availability", "p1"],
+              "query": [{ "key": "cep", "value": "99999999" }]
+            },
+            "description": "ViaCEP responde com erro. Esperado: 404 com mensagem de CEP não encontrado."
+          },
+          "response": []
+        },
+        {
+          "name": "Produto inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p999?cep=08773380",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "availability", "p999"],
+              "query": [{ "key": "cep", "value": "08773380" }]
+            },
+            "description": "Esperado: 404 com mensagem de produto não encontrado."
+          },
+          "response": []
+        },
+        {
+          "name": "Sem parametro cep",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "availability", "p1"]
+            },
+            "description": "Esperado: 400 informando que o parâmetro cep é obrigatório."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CRUD de produtos (Aulas 1 a 3)",
+      "item": [
+        {
+          "name": "Listar produtos ativos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": ["{{baseUrl}}"],
+              "path": ["product"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cadastrar produto",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mesa de Escritorio\",\n  \"price\": 45000,\n  \"category\": \"home\",\n  \"distributionCenter\": \"Porto Alegre\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": ["{{baseUrl}}"],
+              "path": ["product"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar produto",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"p1\",\n  \"name\": \"Football Jersey Pro\",\n  \"price\": 6000,\n  \"category\": \"clothes\",\n  \"distributionCenter\": \"Mogi das Cruzes\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": ["{{baseUrl}}"],
+              "path": ["product"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Inativar produto",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/p20",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "p20"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar produto inexistente (erro tratado)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"p999\",\n  \"name\": \"Produto Fantasma\",\n  \"price\": 1000,\n  \"category\": \"home\",\n  \"distributionCenter\": \"Recife\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": ["{{baseUrl}}"],
+              "path": ["product"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cadastrar produto invalido (validacao)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"price\": null,\n  \"category\": \"\",\n  \"distributionCenter\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": ["{{baseUrl}}"],
+              "path": ["product"]
+            },
+            "description": "Esperado: 400 pelas validações @NotBlank/@NotNull."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Consultas e filtros (Aulas 1 a 3)",
+      "item": [
+        {
+          "name": "Produtos por categoria (Request Param)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/endpoint1?categoryAsParam=electronics",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "endpoint1"],
+              "query": [{ "key": "categoryAsParam", "value": "electronics" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Produto por id (Path Variable)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/endpoint2/p1",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "endpoint2", "p1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Top 5 produtos por preco",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/endpoint3/top5byprice",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "endpoint3", "top5byprice"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Categoria com Path + Param + Header + Body",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "categoryAsHeader", "value": "electronics" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"electronics\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product/category/electronics?categoryAsParam=electronics",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "category", "electronics"],
+              "query": [{ "key": "categoryAsParam", "value": "electronics" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Busca de CEP por endereco",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/cep?state=SP&city=Mogi das Cruzes&street=Avenida Francisco Rodrigues Filho",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "cep"],
+              "query": [
+                { "key": "state", "value": "SP" },
+                { "key": "city", "value": "Mogi das Cruzes" },
+                { "key": "street", "value": "Avenida Francisco Rodrigues Filho" }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ disponibilidade de um produto em determinada cidade a partir de um CEP.
 
 ## Stack
 
-- Java 17
+- Java 21
 - Spring Boot 3 (Web, Data JPA, Validation)
 - PostgreSQL
 - Flyway (migrations)
@@ -41,14 +41,35 @@ disponibilidade de um produto em determinada cidade a partir de um CEP.
 |--------|------------------------------------|---------------------------------------------------------|
 | GET    | `/product`                         | Lista todos os produtos ativos                          |
 | POST   | `/product`                         | Cadastra um novo produto                                 |
-| PUT    | `/product`                         | Atualiza nome/preço de um produto                        |
+| PUT    | `/product`                         | Atualiza nome, preço, categoria e centro de distribuição |
 | DELETE | `/product/{id}`                    | Inativa um produto (soft delete)                         |
-| GET    | `/product/availability/{id}`       | Verifica se o CEP informado pertence ao `distribution_center` do produto |
+| GET    | `/product/availability/{id}?cep=`  | Verifica se o CEP informado pertence ao `distribution_center` do produto |
 | GET    | `/product/endpoint1`               | Lista produtos por categoria (`categoryAsParam`)          |
 | GET    | `/product/endpoint2/{id}`          | Busca um produto por id                                   |
 | GET    | `/product/endpoint3/top5byprice`   | Top 5 produtos por preço                                   |
 | GET    | `/product/category/{categoryAsPath}` | Exemplo combinando Path, Param, Header e Body            |
 | GET    | `/product/cep`                     | Busca CEP a partir de estado/cidade/rua (uso didático à parte)       |
+
+## Endpoint de disponibilidade
+
+`GET /product/availability/{id}?cep=08773380`
+
+Busca o produto pelo id, consulta a cidade do CEP na ViaCEP e responde `true`
+quando essa cidade é a mesma do `distribution_center` do produto, ou `false`
+caso contrário.
+
+Respostas de erro tratadas:
+
+| Situação                          | Status |
+|-----------------------------------|--------|
+| Parâmetro `cep` ausente           | 400    |
+| CEP fora do formato de 8 dígitos  | 400    |
+| Produto não encontrado            | 404    |
+| CEP inexistente na ViaCEP         | 404    |
+| ViaCEP indisponível ou em timeout | 503    |
+
+A collection do Postman com esses casos está em
+`postman/Atividade-M1-ViaCEP.postman_collection.json`.
 
 ## Estrutura do banco
 
