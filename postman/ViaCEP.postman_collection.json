@@ -1,0 +1,203 @@
+{
+	"info": {
+		"name": "Produtos - Aulas 2, 3 e 4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{ "key": "baseUrl", "value": "http://localhost:8080" }
+	],
+	"item": [
+		{
+			"name": "Aula 4 - Disponibilidade ViaCEP",
+			"item": [
+				{
+					"name": "Disponível (p1 SP x CEP SP)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product/availability/p1?cep=08773380",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "availability", "p1"],
+							"query": [{ "key": "cep", "value": "08773380" }]
+						}
+					}
+				},
+				{
+					"name": "Indisponível (p11 RJ x CEP SP)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product/availability/p11?cep=08773380",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "availability", "p11"],
+							"query": [{ "key": "cep", "value": "08773380" }]
+						}
+					}
+				},
+				{
+					"name": "CEP mal formatado",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product/availability/p1?cep=123abc",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "availability", "p1"],
+							"query": [{ "key": "cep", "value": "123abc" }]
+						}
+					}
+				},
+				{
+					"name": "CEP inexistente",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product/availability/p1?cep=99999999",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "availability", "p1"],
+							"query": [{ "key": "cep", "value": "99999999" }]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Aula 2 - Distribution Center",
+			"item": [
+				{
+					"name": "Criar produto válido (RJ)",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Notebook\",\n    \"price\": 42000,\n    \"category\": \"electronics\",\n    \"distributionCenter\": \"RJ\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product",
+							"host": ["{{baseUrl}}"],
+							"path": ["product"]
+						}
+					}
+				},
+				{
+					"name": "Criar sem distributionCenter (400)",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Notebook\",\n    \"price\": 42000,\n    \"category\": \"electronics\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product",
+							"host": ["{{baseUrl}}"],
+							"path": ["product"]
+						}
+					}
+				},
+				{
+					"name": "Criar com distributionCenter inválido (400)",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Notebook\",\n    \"price\": 42000,\n    \"category\": \"electronics\",\n    \"distributionCenter\": \"XX\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product",
+							"host": ["{{baseUrl}}"],
+							"path": ["product"]
+						}
+					}
+				},
+				{
+					"name": "Produtos por centro (RJ)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product/distribution-center/RJ",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "distribution-center", "RJ"]
+						}
+					}
+				},
+				{
+					"name": "Bônus - contagem por centro",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product/distribution-center/count",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "distribution-center", "count"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Aula 3 - Derivação x Raw Query",
+			"item": [
+				{
+					"name": "1. Por categoria",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product?category=home",
+							"host": ["{{baseUrl}}"],
+							"path": ["product"],
+							"query": [{ "key": "category", "value": "home" }]
+						}
+					}
+				},
+				{
+					"name": "2. Por centro e categoria",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product/distribution-center/SP?category=clothes",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "distribution-center", "SP"],
+							"query": [{ "key": "category", "value": "clothes" }]
+						}
+					}
+				},
+				{
+					"name": "3. Preço mínimo",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product?minPrice=30000",
+							"host": ["{{baseUrl}}"],
+							"path": ["product"],
+							"query": [{ "key": "minPrice", "value": "30000" }]
+						}
+					}
+				},
+				{
+					"name": "4. Nome contém",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product?nameContains=shoe",
+							"host": ["{{baseUrl}}"],
+							"path": ["product"],
+							"query": [{ "key": "nameContains", "value": "shoe" }]
+						}
+					}
+				},
+				{
+					"name": "5. Top 3 mais caros",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/product/top-expensive",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "top-expensive"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

@@ -1,10 +1,13 @@
 package com.example.crud.controllers;
 
+import com.example.crud.domain.product.DistributionCenter;
 import com.example.crud.domain.product.Product;
 import com.example.crud.domain.product.ProductRepository;
 import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.RequestProduct;
+import com.example.crud.domain.product.TopExpensiveProducts;
 import com.example.crud.service.AddressSearch;
+import com.example.crud.service.AvailabilityService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,17 +29,68 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
     private final AddressSearch addressSearch;
+    private final AvailabilityService availabilityService;
 
     @Autowired
-    public ProductController(ProductRepository repository, AddressSearch addressSearch) {
+    public ProductController(ProductRepository repository, AddressSearch addressSearch, AvailabilityService availabilityService) {
         this.repository = repository;
         this.addressSearch = addressSearch;
+        this.availabilityService = availabilityService;
     }
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
         var allProducts = repository.findAllByActiveTrue();
         return ResponseEntity.ok(allProducts);
+    }
+
+    @GetMapping(params = "category")
+    public ResponseEntity<List<Product>> getProductsByCategory(@RequestParam String category){
+        return ResponseEntity.ok(repository.findAllByActiveTrueAndCategory(category));
+    }
+
+    @GetMapping(params = "minPrice")
+    public ResponseEntity<List<Product>> getProductsByMinPrice(@RequestParam Integer minPrice){
+        return ResponseEntity.ok(repository.findAllByActiveTrueAndPriceGreaterThan(minPrice));
+    }
+
+    @GetMapping(params = "nameContains")
+    public ResponseEntity<List<Product>> getProductsByName(@RequestParam String nameContains){
+        return ResponseEntity.ok(repository.findAllActiveByNameContaining(nameContains));
+    }
+
+    @GetMapping("/top-expensive")
+    public ResponseEntity<List<Product>> getTopExpensive(){
+        TopExpensiveProducts topExpensive = new TopExpensiveProducts(repository.findAllByActiveTrue());
+        return ResponseEntity.ok(topExpensive.getTop());
+    }
+
+    @GetMapping("/distribution-center/{distributionCenter}")
+    public ResponseEntity<List<Product>> getProductsByDistributionCenter(@PathVariable DistributionCenter distributionCenter){
+        return ResponseEntity.ok(repository.findAllByActiveTrueAndDistributionCenter(distributionCenter));
+    }
+
+    @GetMapping(value = "/distribution-center/{distributionCenter}", params = "category")
+    public ResponseEntity<List<Product>> getProductsByDistributionCenterAndCategory(
+            @PathVariable DistributionCenter distributionCenter,
+            @RequestParam String category
+    ){
+        return ResponseEntity.ok(repository.findAllByActiveTrueAndDistributionCenterAndCategory(distributionCenter, category));
+    }
+
+    @GetMapping("/distribution-center/count")
+    public ResponseEntity<Map<DistributionCenter, Long>> countByDistributionCenter(){
+        Map<DistributionCenter, Long> count = new EnumMap<>(DistributionCenter.class);
+        for (Object[] row : repository.countActiveByDistributionCenter()) {
+            count.put((DistributionCenter) row[0], (Long) row[1]);
+        }
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<Boolean> checkAvailability(@PathVariable String id, @RequestParam String cep){
+        boolean available = availabilityService.isAvailable(id, cep);
+        return ResponseEntity.ok(available);
     }
 
     @GetMapping("/cep")
@@ -50,9 +106,9 @@ public class ProductController {
     }
 
     @GetMapping("/endpoint2/{id}") //only one product
-    public ResponseEntity<Optional<Product>> getProduct(@PathVariable String id){
-        Optional<Product> optionalProduct = repository.findById(id);
-        return ResponseEntity.ok(optionalProduct);
+    public ResponseEntity<Product> getProduct(@PathVariable String id){
+        Product product = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/endpoint3/top5byprice") // top 5 product by price
@@ -102,6 +158,8 @@ public class ProductController {
             Product product = optionalProduct.get();
             product.setName(data.name());
             product.setPrice(data.price());
+            product.setCategory(data.category());
+            product.setDistributionCenter(data.distributionCenter());
             return ResponseEntity.ok(product);
         } else {
             throw new EntityNotFoundException();
