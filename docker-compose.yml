@@ -1,32 +1,18 @@
-version: '3.8'
-
 services:
-
   db:
-    container_name: postgres
-    image: postgres:alpine
-    restart: always
+    image: postgres:16-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
       POSTGRES_DB: product
     ports:
       - "5432:5432"
-    networks:
-      - postgres-compose-network
-
-  pgadmin:
-    container_name: pgadmin4
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root123
-    ports:
-      - "15432:80"
-    networks:
-      - postgres-compose-network
-
-networks:
-  postgres-compose-network:
-    driver: bridge
+    volumes:
+      - product_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d product"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+volumes:
+  product_data:

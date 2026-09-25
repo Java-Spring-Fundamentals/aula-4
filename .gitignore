@@ -31,3 +31,16 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.env
+*.log
+
+# Materiais locais de apoio e arquivos do workspace Postman
+/COMO_ENTREGAR.txt
+/docs/VALIDACAO.md
+/docs/evidencias/
+/.postman/
+/postman/collections/
+/postman/globals/
+
+/docs/ATIVIDADE M1.docx

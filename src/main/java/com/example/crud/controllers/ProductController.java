@@ -1,124 +1,57 @@
 package com.example.crud.controllers;
-
-import com.example.crud.domain.product.Product;
-import com.example.crud.domain.product.ProductRepository;
-import com.example.crud.domain.category.RequestCategory;
-import com.example.crud.domain.product.RequestProduct;
-import com.example.crud.service.AddressSearch;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.crud.domain.product.*;
+import com.example.crud.infra.ApiException;
+import com.example.crud.services.*;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/product")
 public class ProductController {
-    @Autowired
-    private ProductRepository repository;
-    private final AddressSearch addressSearch;
-
-    @Autowired
-    public ProductController(ProductRepository repository, AddressSearch addressSearch) {
-        this.repository = repository;
-        this.addressSearch = addressSearch;
+    private final ProductRepository repository;
+    private final ProductService products;
+    private final ViaCepService viaCep;
+    public ProductController(ProductRepository repository, ProductService products, ViaCepService viaCep) {
+        this.repository = repository; this.products = products; this.viaCep = viaCep;
     }
-
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts(){
-        var allProducts = repository.findAllByActiveTrue();
-        return ResponseEntity.ok(allProducts);
+    public List<Product> list(@RequestParam(required = false) String category) {
+        return category == null ? repository.findAllByActiveTrue()
+            : repository.findAllByActiveTrueAndCategoryIgnoreCase(category);
     }
-
-    @GetMapping("/cep")
-    public ResponseEntity<String> verifyAvailability(@RequestParam String state, @RequestParam String city, @RequestParam String street){
-        String cep = addressSearch.searchAddress(state, city, street);
-        return ResponseEntity.ok(cep);
-    }
-
-    @GetMapping("/endpoint1") //products from only one category
-    public ResponseEntity<List<Product>> getAllProducts1(@RequestParam String categoryAsParam){
-        var allProducts = repository.findAllByCategory(categoryAsParam);
-        return ResponseEntity.ok(allProducts);
-    }
-
-    @GetMapping("/endpoint2/{id}") //only one product
-    public ResponseEntity<Optional<Product>> getProduct(@PathVariable String id){
-        Optional<Product> optionalProduct = repository.findById(id);
-        return ResponseEntity.ok(optionalProduct);
-    }
-
-    @GetMapping("/endpoint3/top5byprice") // top 5 product by price
-    public ResponseEntity<List<Product>> getAllProducts3(){
-        var allProducts = repository.findAllByActiveTrue();
-
-        List<Product> topFive = allProducts
-                .stream()
-                .sorted(Comparator.comparingInt(Product::getPrice).reversed())
-                .limit(5)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(topFive);
-    }
-
-    @GetMapping("/category/{categoryAsPath}") //all REST Components
-    public ResponseEntity<List<Product>> getProductsByCategory(
-            @RequestHeader String categoryAsHeader,
-            @PathVariable String categoryAsPath,
-            @RequestBody @Valid RequestCategory categoryAsBody,
-            @RequestParam String categoryAsParam
-    ){
-        var allProducts = repository.findAllByActiveTrue();
-        List<Product> filteredProducts = new ArrayList<>();
-
-        for (int i = 0; i < allProducts.size(); i++) {
-            Product product = allProducts.get(i);
-            if (categoryAsParam.equals(product.getCategory())) {
-                filteredProducts.add(product);
-            }
+    @GetMapping("/{id}")
+    public Product byId(@PathVariable String id) { return products.findActive(id); }
+    @GetMapping("/top5")
+    public List<Product> top5() { return repository.findTop5ByActiveTrueOrderByPriceDescIdAsc(); }
+    // A rota da aula anterior continua aceitando os quatro meios de entrada.
+    // Quando repetida, a categoria deve ser consistente entre os parâmetros.
+    @GetMapping("/category/{categoryAsPath}")
+    public List<Product> byCategory(@PathVariable String categoryAsPath,
+            @RequestHeader(required = false) String categoryAsHeader,
+            @RequestParam(required = false) String categoryAsParam,
+            @RequestBody(required = false) @Valid RequestCategory categoryAsBody) {
+        for (String supplied : new String[]{categoryAsHeader,categoryAsParam,
+                categoryAsBody == null ? null : categoryAsBody.category()}) {
+            if (supplied != null && !categoryAsPath.equalsIgnoreCase(supplied))
+                throw new ApiException(HttpStatus.BAD_REQUEST,"As categorias informadas devem ser iguais");
         }
-        return ResponseEntity.ok(filteredProducts);
+        return repository.findAllByActiveTrueAndCategoryIgnoreCase(categoryAsPath);
     }
-
     @PostMapping
-    public ResponseEntity<Void> registerProduct(@RequestBody @Valid RequestProduct data){
-        Product newProduct = new Product(data);
-        repository.save(newProduct);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Product> create(@RequestBody @Valid RequestProduct data) {
+        Product product = products.create(data);
+        return ResponseEntity.created(URI.create("/product/" + product.getId())).body(product);
     }
-
     @PutMapping
-    @Transactional
-    public ResponseEntity<Product> updateProduct(@RequestBody @Valid RequestProduct data){
-        Optional<Product> optionalProduct = repository.findById(data.id());
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            product.setName(data.name());
-            product.setPrice(data.price());
-            return ResponseEntity.ok(product);
-        } else {
-            throw new EntityNotFoundException();
-        }
-    }
-
+    public Product update(@RequestBody @Valid RequestProduct data) { return products.update(data); }
     @DeleteMapping("/{id}")
-    @Transactional
-    public ResponseEntity<Void> deleteProduct(@PathVariable String id){
-        Optional<Product> optionalProduct = repository.findById(id);
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            product.setActive(false);
-            return ResponseEntity.noContent().build();
-        } else {
-            throw new EntityNotFoundException();
-        }
+    public ResponseEntity<Void> deactivate(@PathVariable String id) {
+        products.deactivate(id); return ResponseEntity.noContent().build();
     }
-
+    @GetMapping("/{id}/availability")
+    public boolean availability(@PathVariable String id, @RequestParam String cep) {
+        return viaCep.isAvailable(id,cep);
+    }
 }
