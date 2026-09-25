@@ -1,0 +1,433 @@
+{
+  "info": {
+    "_postman_id": "3d3dafc0-b834-4d69-a854-c85a1d5aad09",
+    "name": "M1 - Integracao de Sistemas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58194516"
+  },
+  "item": [
+    {
+      "name": "ViaCEP - CEP inexistente - 404",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product/dfc70678-865e-4505-9451-8ae8f49d5d61/availability?cep=99999999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "dfc70678-865e-4505-9451-8ae8f49d5d61",
+            "availability"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "99999999",
+              "sortOrder": 0
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ViaCEP - CEP invalido - 400",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product/dfc70678-865e-4505-9451-8ae8f49d5d61/availability?cep=123",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "dfc70678-865e-4505-9451-8ae8f49d5d61",
+            "availability"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "123",
+              "sortOrder": 0
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ViaCEP - cidade diferente - false",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product/53690a36-aeb4-4df0-9d27-a9820253041c/availability?cep=08773380",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "53690a36-aeb4-4df0-9d27-a9820253041c",
+            "availability"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "08773380",
+              "sortOrder": 0
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar produtos",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar produto",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Mouse Gamer\",\r\n  \"price\": 15000,\r\n  \"category\": \"electronics\",\r\n  \"distributionCenter\": \"Mogi das Cruzes\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar produto por ID",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product/bd52ca2c-311b-4354-b2ea-cb5e46e3cc62",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "bd52ca2c-311b-4354-b2ea-cb5e46e3cc62"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Atualizar produto",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "PUT",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Bluetooth Speaker Atualizado\",\r\n  \"price\": 18000,\r\n  \"category\": \"electronics\",\r\n  \"distributionCenter\": \"Mogi das Cruzes\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product/bd52ca2c-311b-4354-b2ea-cb5e46e3cc62",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "bd52ca2c-311b-4354-b2ea-cb5e46e3cc62"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Inativar produto",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product/bd52ca2c-311b-4354-b2ea-cb5e46e3cc62",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "bd52ca2c-311b-4354-b2ea-cb5e46e3cc62"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Top 5 por preco",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product/top-five",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "top-five"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar por categoria",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product/category?category=electronics",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "category"
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "electronics",
+              "sortOrder": 0
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Validacao produto - 400",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"\",\r\n  \"price\": 15000,\r\n  \"category\": \"\",\r\n  \"distributionCenter\": \"\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ViaCEP - mesma cidade - true",
+      "request": {
+        "auth": {
+          "type": "inherit"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Client-Name",
+            "value": "Postman",
+            "type": "text",
+            "id": 0
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/product/dfc70678-865e-4505-9451-8ae8f49d5d61/availability?cep=08773-380",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "dfc70678-865e-4505-9451-8ae8f49d5d61",
+            "availability"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "08773-380",
+              "sortOrder": 0
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
