@@ -1,0 +1,79 @@
+{
+  "info": {
+    "name": "Aula 4 - ViaCEP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Listar produtos",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/product"
+      }
+    },
+    {
+      "name": "Disponibilidade - CEP de Mogi",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/{{productId}}?cep=08773380",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "{{productId}}"],
+          "query": [{ "key": "cep", "value": "08773380" }]
+        }
+      }
+    },
+    {
+      "name": "Disponibilidade - CEP de Recife",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/{{productId}}?cep=50030230",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "{{productId}}"],
+          "query": [{ "key": "cep", "value": "50030230" }]
+        }
+      }
+    },
+    {
+      "name": "Disponibilidade - CEP de Porto Alegre",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/{{productId}}?cep=90010170",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "{{productId}}"],
+          "query": [{ "key": "cep", "value": "90010170" }]
+        }
+      }
+    },
+    {
+      "name": "Disponibilidade - CEP invalido",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/{{productId}}?cep=123",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "{{productId}}"],
+          "query": [{ "key": "cep", "value": "123" }]
+        }
+      }
+    },
+    {
+      "name": "Disponibilidade - CEP inexistente",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/product/availability/{{productId}}?cep=00000000",
+          "host": ["{{baseUrl}}"],
+          "path": ["product", "availability", "{{productId}}"],
+          "query": [{ "key": "cep", "value": "00000000" }]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "productId", "value": "dfc70678-865e-4505-9451-8ae8f49d5d61" }
+  ]
+}

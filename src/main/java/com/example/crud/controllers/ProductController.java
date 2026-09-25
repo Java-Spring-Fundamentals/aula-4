@@ -1,10 +1,11 @@
 package com.example.crud.controllers;
 
+import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.Product;
 import com.example.crud.domain.product.ProductRepository;
-import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.RequestProduct;
 import com.example.crud.service.AddressSearch;
+import com.example.crud.service.ViaCepService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +25,31 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
     private final AddressSearch addressSearch;
+    private final ViaCepService viaCepService;
 
     @Autowired
-    public ProductController(ProductRepository repository, AddressSearch addressSearch) {
+    public ProductController(ProductRepository repository, AddressSearch addressSearch, ViaCepService viaCepService) {
         this.repository = repository;
         this.addressSearch = addressSearch;
+        this.viaCepService = viaCepService;
     }
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
         var allProducts = repository.findAllByActiveTrue();
         return ResponseEntity.ok(allProducts);
+    }
+
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<Boolean> checkAvailability(@PathVariable String id, @RequestParam String cep){
+        Optional<Product> optionalProduct = repository.findById(id);
+        if (optionalProduct.isEmpty() || !Boolean.TRUE.equals(optionalProduct.get().getActive())) {
+            throw new EntityNotFoundException();
+        }
+
+        Product product = optionalProduct.get();
+        boolean disponivel = viaCepService.cidadeBateComCentro(product.getDistribution_center(), cep);
+        return ResponseEntity.ok(disponivel);
     }
 
     @GetMapping("/cep")
@@ -102,6 +117,7 @@ public class ProductController {
             Product product = optionalProduct.get();
             product.setName(data.name());
             product.setPrice(data.price());
+            product.setDistribution_center(data.distributionCenter());
             return ResponseEntity.ok(product);
         } else {
             throw new EntityNotFoundException();
