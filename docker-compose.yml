@@ -1,29 +1,30 @@
-version: '3.8'
+# Sem "container_name" fixo: o Docker usa o nome da pasta como prefixo
+# (ex.: aula-4-db-1), evitando conflito com containers de outros projetos.
+# As portas do host podem ser trocadas por variáveis de ambiente
+# (DB_PORT / PGADMIN_PORT) caso já estejam em uso por outro projeto.
 
 services:
 
   db:
-    container_name: postgres
     image: postgres:alpine
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: product
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     networks:
       - postgres-compose-network
 
   pgadmin:
-    container_name: pgadmin4
     image: dpage/pgadmin4
-    restart: always
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: root123
     ports:
-      - "15432:80"
+      - "${PGADMIN_PORT:-15432}:80"
     networks:
       - postgres-compose-network
 

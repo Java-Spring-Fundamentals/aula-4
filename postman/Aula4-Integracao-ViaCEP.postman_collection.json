@@ -1,0 +1,505 @@
+{
+  "info": {
+    "name": "Aula 4 - Integração ViaCEP",
+    "description": "Collection da Atividade M1 (Integração de Sistemas). Ajuste a variável baseUrl se a API não estiver em localhost:8080.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Aula 4 - Disponibilidade (ViaCEP)",
+      "item": [
+        {
+          "name": "Disponível (true) - p1 em Mogi das Cruzes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1?cep=08773-380",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773-380"
+                }
+              ]
+            },
+            "description": "Esperado: 200 com available = true"
+          },
+          "response": []
+        },
+        {
+          "name": "Indisponível (false) - p1 em São Paulo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1?cep=01001-000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "01001-000"
+                }
+              ]
+            },
+            "description": "Esperado: 200 com available = false"
+          },
+          "response": []
+        },
+        {
+          "name": "Disponível (true) - p11 em Recife",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p11?cep=50030-230",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p11"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "50030-230"
+                }
+              ]
+            },
+            "description": "Esperado: 200 com available = true"
+          },
+          "response": []
+        },
+        {
+          "name": "CEP sem hífen",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1?cep=08773380",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773380"
+                }
+              ]
+            },
+            "description": "Esperado: 200 (aceita com ou sem hífen)"
+          },
+          "response": []
+        },
+        {
+          "name": "Erro - CEP mal formatado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1?cep=123",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "123"
+                }
+              ]
+            },
+            "description": "Esperado: 400 CEP inválido (a ViaCEP nem é chamada)"
+          },
+          "response": []
+        },
+        {
+          "name": "Erro - CEP inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1?cep=99999-999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "99999-999"
+                }
+              ]
+            },
+            "description": "Esperado: 404 CEP não encontrado (ViaCEP retorna {\"erro\": true})"
+          },
+          "response": []
+        },
+        {
+          "name": "Erro - Produto inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/nao-existe?cep=08773-380",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "nao-existe"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773-380"
+                }
+              ]
+            },
+            "description": "Esperado: 404 produto não encontrado"
+          },
+          "response": []
+        },
+        {
+          "name": "Erro - Sem parâmetro cep",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/availability/p1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "availability",
+                "p1"
+              ]
+            },
+            "description": "Esperado: 400 parâmetro obrigatório ausente"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Aulas 1 a 3 - CRUD",
+      "item": [
+        {
+          "name": "Listar produtos ativos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cadastrar produto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Boné\",\n  \"price\": 4500,\n  \"category\": \"clothes\",\n  \"distributionCenter\": \"Recife\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cadastrar produto inválido (validação)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"price\": null,\n  \"category\": \"clothes\",\n  \"distributionCenter\": \"Recife\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Esperado: 400"
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar produto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"p1\",\n  \"name\": \"Football Jersey 2026\",\n  \"price\": 5500,\n  \"category\": \"clothes\",\n  \"distributionCenter\": \"Mogi das Cruzes\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Inativar produto",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/p10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "p10"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Inativar produto inexistente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/nao-existe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "nao-existe"
+              ]
+            },
+            "description": "Esperado: 404"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Aulas 1 a 3 - Consultas",
+      "item": [
+        {
+          "name": "Por categoria (Request Param)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/endpoint1?categoryAsParam=electronics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "endpoint1"
+              ],
+              "query": [
+                {
+                  "key": "categoryAsParam",
+                  "value": "electronics"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por id (Path Variable)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/endpoint2/p1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "endpoint2",
+                "p1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por id inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/endpoint2/nao-existe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "endpoint2",
+                "nao-existe"
+              ]
+            },
+            "description": "Esperado: 404"
+          },
+          "response": []
+        },
+        {
+          "name": "Top 5 por preço",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/endpoint3/top5byprice",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "endpoint3",
+                "top5byprice"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Path + Param + Header + Body",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "categoryAsHeader",
+                "value": "clothes"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/product/category/clothes?categoryAsParam=clothes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "category",
+                "clothes"
+              ],
+              "query": [
+                {
+                  "key": "categoryAsParam",
+                  "value": "clothes"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"clothes\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
