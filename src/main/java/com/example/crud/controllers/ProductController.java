@@ -4,10 +4,11 @@ import com.example.crud.domain.product.Product;
 import com.example.crud.domain.product.ProductRepository;
 import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.RequestProduct;
+import com.example.crud.domain.product.AvailabilityResponse;
 import com.example.crud.service.AddressSearch;
+import com.example.crud.service.AvailabilityService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -21,20 +22,30 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
-    @Autowired
-    private ProductRepository repository;
+    private final ProductRepository repository;
     private final AddressSearch addressSearch;
+    private final AvailabilityService availabilityService;
 
-    @Autowired
-    public ProductController(ProductRepository repository, AddressSearch addressSearch) {
+    public ProductController(ProductRepository repository, AddressSearch addressSearch,
+                             AvailabilityService availabilityService) {
         this.repository = repository;
         this.addressSearch = addressSearch;
+        this.availabilityService = availabilityService;
     }
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
         var allProducts = repository.findAllByActiveTrue();
         return ResponseEntity.ok(allProducts);
+    }
+
+    // Verifica se o produto está disponível na cidade do CEP informado.
+    // Ex.: GET /product/availability/p1?cep=08773380
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<AvailabilityResponse> checkAvailability(@PathVariable String id,
+                                                                  @RequestParam String cep) {
+        AvailabilityResponse response = availabilityService.checkAvailability(id, cep);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/cep")
