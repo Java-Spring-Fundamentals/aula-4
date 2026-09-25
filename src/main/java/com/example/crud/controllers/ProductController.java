@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import java.util.HashMap;
+import java.util.Map;
+import com.example.crud.services.ViaCepService;
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -30,6 +34,24 @@ public class ProductController {
         this.repository = repository;
         this.addressSearch = addressSearch;
     }
+
+    @Autowired
+    private ViaCepService viaCepService;
+
+    @GetMapping("/availability/{id}")
+    public ResponseEntity checkAvailability(
+        @PathVariable String id,
+        @RequestParam String cep
+) {
+    boolean available = viaCepService.isProductAvailable(id, cep);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("productId", id);
+    response.put("cep", cep);
+    response.put("available", available);
+
+    return ResponseEntity.ok(response);
+}
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
