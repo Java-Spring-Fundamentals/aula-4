@@ -1,0 +1,486 @@
+{
+  "info": {
+    "_postman_id": "db06f2fe-e22d-4d1d-a91d-d50eb1b00654",
+    "name": "Atividade M1 -ViaCEP",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58527666",
+    "_collection_link": "https://go.postman.co/collection/58527666-db06f2fe-e22d-4d1d-a91d-d50eb1b00654?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Lista produtos ativos",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar produto",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\n});\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Teclado\",\n  \"price\": 15000,\n  \"category\": \"electronics\",\n  \"distributionCenter\": \"Mogi das Cruzes\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    },
+    {
+      "name": "Atualizar produto",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"id\": \"79e1be39-2332-4137-b646-17f70af66a42\",\r\n  \"name\": \"Teclado mecanico\",\r\n  \"price\": 20000,\r\n  \"category\": \"electronics\",\r\n  \"distributionCenter\": \"Recife\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Inativar produto",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/79e1be39-2332-4137-b646-17f70af66a42",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "79e1be39-2332-4137-b646-17f70af66a42"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar produto por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/endpoint2/p1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "endpoint2",
+            "p1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar produtos por categoria",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/endpoint1?categoryAsParam=electronics",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "endpoint1"
+          ],
+          "query": [
+            {
+              "key": "categoryAsParam",
+              "value": "electronics"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar 5 produtos mais caros",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/endpoint3/top5byprice",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "endpoint3",
+            "top5byprice"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Produto disponivel na cidade",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/availability/p1?cep=08773380",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "availability",
+            "p1"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "08773380"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ViaCEP indisponivel - teste com configurçao especial",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/availability/p1?cep=08773380",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "availability",
+            "p1"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "08773380"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Produto indisponivel na cidade",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/availability/p11?cep=08773380",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "availability",
+            "p11"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "08773380"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CEP com formato invalido",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/availability/p1?cep=123",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "availability",
+            "p1"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "123"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CEP inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/availability/p1?cep=99999999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "availability",
+            "p1"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "99999999"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Produto inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/product/availability/produto-inexistente?cep=08773380",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "availability",
+            "produto-inexistente"
+          ],
+          "query": [
+            {
+              "key": "cep",
+              "value": "08773380"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar produto com dados invalidos",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"\",\r\n  \"price\": 15000,\r\n  \"category\": \"electronics\",\r\n  \"distributionCenter\": \"Mogi das Cruzes\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar produto com preço invalido",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Teclado\",\r\n  \"price\": -10,\r\n  \"category\": \"electronics\",\r\n  \"distributionCenter\": \"Mogi das Cruzes\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastro produto com centro invalido",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Teclado\",\r\n  \"price\": 15000,\r\n  \"category\": \"electronics\",\r\n  \"distributionCenter\": \"Curitiba\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar categoria com quatro entrada",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "categoryAsHeader",
+            "value": "electronics"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"category\": \"electronics\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product/category/electronics?categoryAsParam=electronics",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product",
+            "category",
+            "electronics"
+          ],
+          "query": [
+            {
+              "key": "categoryAsParam",
+              "value": "electronics"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
