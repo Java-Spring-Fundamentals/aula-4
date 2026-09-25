@@ -41,4 +41,9 @@ public class AddressSearch {
             return null;
         }
     }
+
+    public Address searchByCep(String cep) {
+        String url = "https://viacep.com.br/ws/{cep}/json/";
+        return restTemplate.getForObject(url, Address.class, cep);
+    }
 }
