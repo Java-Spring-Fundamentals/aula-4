@@ -4,6 +4,10 @@ API REST em Java + Spring Boot para cadastro de produtos, com um endpoint de
 integração com o serviço [ViaCEP](https://viacep.com.br/) para verificar a
 disponibilidade de um produto em determinada cidade a partir de um CEP.
 
+Alyne Rodrigues de Campos  
+RGM: 11231100534  
+Sistemas de Informação - 8ºB
+
 ## Stack
 
 - Java 17
@@ -37,18 +41,21 @@ disponibilidade de um produto em determinada cidade a partir de um CEP.
 
 ## Endpoints principais
 
-| Método | Rota                              | Descrição                                              |
-|--------|------------------------------------|---------------------------------------------------------|
-| GET    | `/product`                         | Lista todos os produtos ativos                          |
-| POST   | `/product`                         | Cadastra um novo produto                                 |
-| PUT    | `/product`                         | Atualiza nome/preço de um produto                        |
-| DELETE | `/product/{id}`                    | Inativa um produto (soft delete)                         |
-| GET    | `/product/availability/{id}`       | Verifica se o CEP informado pertence ao `distribution_center` do produto |
-| GET    | `/product/endpoint1`               | Lista produtos por categoria (`categoryAsParam`)          |
-| GET    | `/product/endpoint2/{id}`          | Busca um produto por id                                   |
-| GET    | `/product/endpoint3/top5byprice`   | Top 5 produtos por preço                                   |
-| GET    | `/product/category/{categoryAsPath}` | Exemplo combinando Path, Param, Header e Body            |
-| GET    | `/product/cep`                     | Busca CEP a partir de estado/cidade/rua (uso didático à parte)       |
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/product` | Lista os produtos ativos |
+| GET | `/product/{id}` | Busca um produto por id |
+| POST | `/product` | Cadastra um produto |
+| PUT | `/product/{id}` | Atualiza um produto |
+| DELETE | `/product/{id}` | Inativa um produto |
+| GET | `/product/category/{category}` | Lista produtos por categoria |
+| GET | `/product/top5-by-price` | Retorna os cinco produtos de maior preço |
+| GET | `/product/availability/{id}?cep={cep}` | Verifica a disponibilidade pela cidade do CEP |
+| POST | `/product/category/{categoryPath}/filter` | Exemplo com Path, Param, Header e Body |
+| GET | `/product/cep` | Busca CEP a partir de estado, cidade e rua |
+
+O endpoint de disponibilidade trata CEP inválido, CEP inexistente, produto não
+encontrado, timeout e falhas na comunicação com o serviço externo.
 
 ## Estrutura do banco
 
@@ -56,3 +63,7 @@ As migrations ficam em `src/main/resources/db/migration` e são versionadas
 pelo Flyway (`V1` a `V5`). A tabela `product` tem, entre outros, o campo
 `distribution_center`, usado pelo endpoint de disponibilidade para comparar
 com a cidade retornada pela ViaCEP.
+
+## Postman
+
+A collection utilizada nos testes está na pasta `postman`.

@@ -12,3 +12,6 @@ WHERE id IN ('p11', 'p12', 'p13', 'p14', 'p15', 'p16', 'p17', 'p18');
 UPDATE product
 SET distribution_center = 'Porto Alegre'
 WHERE id IN ('p19', 'p20');
+
+ALTER TABLE product
+ALTER COLUMN distribution_center SET NOT NULL;

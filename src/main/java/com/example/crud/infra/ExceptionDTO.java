@@ -1,14 +1,16 @@
 package com.example.crud.infra;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import java.time.Instant;
+import java.util.Map;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class ExceptionDTO {
-    String message;
-    Integer status;
-    public ExceptionDTO(String message, Integer status){
-
-        this.message = message;
-        this.status = status;
+public record ExceptionDTO(
+        Instant timestamp,
+        int status,
+        String message,
+        String path,
+        Map<String, String> fields
+) {
+    public ExceptionDTO(int status, String message, String path) {
+        this(Instant.now(), status, message, path, Map.of());
     }
 }

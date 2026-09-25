@@ -1,0 +1,205 @@
+{
+  "info": {
+    "_postman_id": "271b2318-2f2d-4e7d-ae6e-50bf0a53c5ee",
+    "name": "Atividade M1 - Integração ViaCEP",
+    "description": "Collection para testar o CRUD de produtos, os filtros das aulas 1 a 3 e a integração com a ViaCEP.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "newProductId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "CRUD de produtos",
+      "item": [
+        {
+          "name": "Listar produtos ativos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/product"
+          }
+        },
+        {
+          "name": "Criar produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "const product = pm.response.json();",
+                  "pm.collectionVariables.set('newProductId', product.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Teclado mecânico\",\n  \"price\": 35000,\n  \"category\": \"electronics\",\n  \"distributionCenter\": \"Mogi das Cruzes\"\n}"
+            },
+            "url": "{{baseUrl}}/product"
+          }
+        },
+        {
+          "name": "Buscar produto por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/product/p1"
+          }
+        },
+        {
+          "name": "Atualizar produto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Teclado mecânico RGB\",\n  \"price\": 39900,\n  \"category\": \"electronics\",\n  \"distributionCenter\": \"Porto Alegre\"\n}"
+            },
+            "url": "{{baseUrl}}/product/{{newProductId}}"
+          }
+        },
+        {
+          "name": "Inativar produto",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/product/{{newProductId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consultas e filtros",
+      "item": [
+        {
+          "name": "Filtrar por categoria",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/product/category/electronics"
+          }
+        },
+        {
+          "name": "Top 5 por preço",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/product/top5-by-price"
+          }
+        },
+        {
+          "name": "Path, Param, Header e Body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Category",
+                "value": "electronics"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"electronics\"\n}"
+            },
+            "url": "{{baseUrl}}/product/category/electronics/filter?categoryParam=electronics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Disponibilidade ViaCEP",
+      "item": [
+        {
+          "name": "Disponível - mesma cidade",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Produto disponível', () => pm.expect(pm.response.json()).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/product/availability/p1?cep=08773380"
+          }
+        },
+        {
+          "name": "Indisponível - cidade diferente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/product/availability/p11?cep=08773380"
+          }
+        },
+        {
+          "name": "CEP mal formatado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/product/availability/p1?cep=123"
+          }
+        },
+        {
+          "name": "CEP inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/product/availability/p1?cep=00000000"
+          }
+        }
+      ]
+    }
+  ]
+}
