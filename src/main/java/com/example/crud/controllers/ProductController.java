@@ -5,8 +5,11 @@ import com.example.crud.domain.product.ProductRepository;
 import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.RequestProduct;
 import com.example.crud.service.AddressSearch;
+import com.example.crud.service.ViaCepService;
+import com.example.crud.domain.address.Address;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.aspectj.apache.bcel.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +27,13 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
     private final AddressSearch addressSearch;
+    private final ViaCepService viaCepService; //Adicionando atributo da nova service
 
     @Autowired
-    public ProductController(ProductRepository repository, AddressSearch addressSearch) {
+    public ProductController(ProductRepository repository, AddressSearch addressSearch, ViaCepService viaCepService) {
         this.repository = repository;
         this.addressSearch = addressSearch;
+        this.viaCepService = viaCepService; //novo parametro do construtor já que criamo a service para chamar em algum endpoint
     }
 
     @GetMapping
@@ -41,6 +46,18 @@ public class ProductController {
     public ResponseEntity<String> verifyAvailability(@RequestParam String state, @RequestParam String city, @RequestParam String street){
         String cep = addressSearch.searchAddress(state, city, street);
         return ResponseEntity.ok(cep);
+    }
+
+    @GetMapping("/{id}/disponibilidade")
+    public ResponseEntity<Boolean> verificarDisponibilidade(@PathVariable String id, @RequestParam String cep){
+        Optional<Product> produto = repository.findById(id);
+
+        if (produto.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        boolean disponivel = viaCepService.verificarDisponibilidade(cep, produto.get());
+        return ResponseEntity.ok(disponivel);
     }
 
     @GetMapping("/endpoint1") //products from only one category
@@ -75,6 +92,12 @@ public class ProductController {
             @RequestBody @Valid RequestCategory categoryAsBody,
             @RequestParam String categoryAsParam
     ){
+        if (!categoryAsPath.equals(categoryAsParam)
+                || !categoryAsHeader.equals(categoryAsParam)
+                || !categoryAsBody.category().equals(categoryAsParam)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         var allProducts = repository.findAllByActiveTrue();
         List<Product> filteredProducts = new ArrayList<>();
 
@@ -97,6 +120,9 @@ public class ProductController {
     @PutMapping
     @Transactional
     public ResponseEntity<Product> updateProduct(@RequestBody @Valid RequestProduct data){
+        if (data.id() == null) {
+            return ResponseEntity.badRequest().build();
+        }
         Optional<Product> optionalProduct = repository.findById(data.id());
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();

@@ -1,0 +1,500 @@
+{
+  "info": {
+    "_postman_id": "ec88c0c3-9c10-47d4-9365-5644556bc380",
+    "name": "aula-4 M1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58040625",
+    "_collection_link": "https://go.postman.co/collection/58040625-ec88c0c3-9c10-47d4-9365-5644556bc380?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "CRUD",
+      "item": [
+        {
+          "name": "Listar Produtos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Produto",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Notebook\",\"price\":70000,\"category\":\"electronics\",\"distributionCenter\":\"Porto Alegre\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/product",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Produto",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"id\":\"p1\",\"name\":\"Camisa\",\"price\":5500,\"category\":\"clothes\",\"distributionCenter\":\"Mogi das Cruzes\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/product",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Inativar Produto",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "TRATAMENTO DE ERROS - VIA CEP",
+      "item": [
+        {
+          "name": "Produto Recife, CEP FERRAZ",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p11/disponibilidade?cep=08535310",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p11",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08535310"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mesma cidade Produto de mogi, CEP MOGI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p1/disponibilidade?cep=08773380",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p1",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773380"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Produto Recife, CEP RECIFE",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p11/disponibilidade?cep=50030230",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p11",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "50030230"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CEP que não existe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p1/disponibilidade?cep=99999999",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p1",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "99999999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Produto não Existe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p999/disponibilidade?cep=08773380",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p999",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773380"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Produto e CEP de Porto Alegre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p19/disponibilidade?cep=90010030",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p19",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "90010030"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tratando erros, CEP COM TRAÇO",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p1/disponibilidade?cep=08773-380",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p1",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "08773-380"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tratando erros, CEP MAL FORMATADO",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p1/disponibilidade?cep=123",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p1",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "123"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tratando erros, CEP SÓ LETRAS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p1/disponibilidade?cep=abcdefgh",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p1",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "abcdefgh"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tratando erros, CEP INEXISTENTE",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/p1/disponibilidade?cep=99999999",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "p1",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "cep",
+                  "value": "99999999"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CONSULTAS",
+      "item": [
+        {
+          "name": "POR CATEGORIA",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/endpoint1?categoryAsParam=clothes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "endpoint1"
+              ],
+              "query": [
+                {
+                  "key": "categoryAsParam",
+                  "value": "clothes"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POR ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/endpoint2/p5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "endpoint2",
+                "p5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TOP 5 PREÇOS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/product/endpoint3/top5byprice",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "endpoint3",
+                "top5byprice"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATH, PARAM, HEADER E BODY",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "categoryAsHeader",
+                "value": "home"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"category\":\"home\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/product/category/home?categoryAsParam=home",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "product",
+                "category",
+                "home"
+              ],
+              "query": [
+                {
+                  "key": "categoryAsParam",
+                  "value": "home"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
