@@ -1,15 +1,11 @@
 package com.example.crud.service;
 
 import com.example.crud.domain.address.Address;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class AddressSearch {
@@ -22,23 +18,41 @@ public class AddressSearch {
         this.objectMapper = objectMapper;
     }
 
-    public String searchAddress(String state, String city, String street) {
-        String url = "https://viacep.com.br/ws/{state}/{city}/{street}/json/";
+    public Address searchAddress(String cep) {
 
-        Map<String, String> uriVariables = new HashMap<>();
-        uriVariables.put("state", state);
-        uriVariables.put("city", city);
-        uriVariables.put("street", street);
+        String cepNumeros = cep.replaceAll("\\D", "");
 
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, uriVariables);
+        if (cepNumeros.length() != 8) {
+            throw new IllegalArgumentException("CEP inválido");
+        }
+
+        String url = "https://viacep.com.br/ws/{cep}/json/";
+
+        String responseBody;
 
         try {
-            List<Address> addresses = objectMapper.readValue(response.getBody(), objectMapper.getTypeFactory().constructCollectionType(List.class, Address.class));
-            String cep = addresses.get(0).getCep();
-            return cep;
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
+            responseBody = restTemplate
+                    .getForEntity(url, String.class, cepNumeros)
+                    .getBody();
+
+        } catch (RestClientException e) {
+            throw new RuntimeException("ViaCEP indisponível", e);
+        }
+
+        try {
+            JsonNode json = objectMapper.readTree(responseBody);
+
+            if (json.has("erro") && json.get("erro").asBoolean()) {
+                throw new IllegalArgumentException("CEP não encontrado");
+            }
+
+            return objectMapper.treeToValue(json, Address.class);
+
+        } catch (IllegalArgumentException e) {
+            throw e;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao consultar o ViaCEP", e);
         }
     }
 }
