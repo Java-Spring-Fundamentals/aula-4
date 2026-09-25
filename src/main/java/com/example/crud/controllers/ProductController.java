@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @GetMapping("/cep")
-    public ResponseEntity<String> verifyAvailability(@RequestParam String state, @RequestParam String city, @RequestParam String street){
+    public ResponseEntity<String> searchCepByAddress(@RequestParam String state, @RequestParam String city, @RequestParam String street){
         String cep = addressSearch.searchAddress(state, city, street);
         return ResponseEntity.ok(cep);
     }
@@ -61,9 +61,10 @@ public class ProductController {
     }
 
     @GetMapping("/endpoint2/{id}") //only one product
-    public ResponseEntity<Optional<Product>> getProduct(@PathVariable String id){
-        Optional<Product> optionalProduct = repository.findById(id);
-        return ResponseEntity.ok(optionalProduct);
+    public ResponseEntity<Product> getProduct(@PathVariable String id){
+        Product product = repository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/endpoint3/top5byprice") // top 5 product by price
@@ -108,11 +109,14 @@ public class ProductController {
     @PutMapping
     @Transactional
     public ResponseEntity<Product> updateProduct(@RequestBody @Valid RequestProduct data){
-        Optional<Product> optionalProduct = repository.findById(data.id());
+        // Sem id no corpo não há o que atualizar: responde 404 em vez de estourar erro 500
+        Optional<Product> optionalProduct = data.id() == null ? Optional.empty() : repository.findById(data.id());
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
             product.setName(data.name());
             product.setPrice(data.price());
+            product.setCategory(data.category());
+            product.setDistributionCenter(data.distributionCenter());
             return ResponseEntity.ok(product);
         } else {
             throw new EntityNotFoundException();
