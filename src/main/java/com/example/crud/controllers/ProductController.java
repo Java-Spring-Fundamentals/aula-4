@@ -1,5 +1,6 @@
 package com.example.crud.controllers;
 
+import com.example.crud.domain.address.Address;
 import com.example.crud.domain.product.Product;
 import com.example.crud.domain.product.ProductRepository;
 import com.example.crud.domain.category.RequestCategory;
@@ -43,19 +44,31 @@ public class ProductController {
         return ResponseEntity.ok(cep);
     }
 
-    @GetMapping("/endpoint1") //products from only one category
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<Boolean> checkAvailability(@PathVariable String id, @RequestParam String cep){
+        Optional<Product> optionalProduct = repository.findById(id);
+        if (optionalProduct.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        Product product = optionalProduct.get();
+        Address address = addressSearch.searchByCep(cep);
+        boolean available = product.getDistribution_center().equalsIgnoreCase(address.getLocalidade());
+        return ResponseEntity.ok(available);
+    }
+
+    @GetMapping("/endpoint1")
     public ResponseEntity<List<Product>> getAllProducts1(@RequestParam String categoryAsParam){
         var allProducts = repository.findAllByCategory(categoryAsParam);
         return ResponseEntity.ok(allProducts);
     }
 
-    @GetMapping("/endpoint2/{id}") //only one product
+    @GetMapping("/endpoint2/{id}")
     public ResponseEntity<Optional<Product>> getProduct(@PathVariable String id){
         Optional<Product> optionalProduct = repository.findById(id);
         return ResponseEntity.ok(optionalProduct);
     }
 
-    @GetMapping("/endpoint3/top5byprice") // top 5 product by price
+    @GetMapping("/endpoint3/top5byprice")
     public ResponseEntity<List<Product>> getAllProducts3(){
         var allProducts = repository.findAllByActiveTrue();
 
@@ -68,7 +81,7 @@ public class ProductController {
         return ResponseEntity.ok(topFive);
     }
 
-    @GetMapping("/category/{categoryAsPath}") //all REST Components
+    @GetMapping("/category/{categoryAsPath}")
     public ResponseEntity<List<Product>> getProductsByCategory(
             @RequestHeader String categoryAsHeader,
             @PathVariable String categoryAsPath,
