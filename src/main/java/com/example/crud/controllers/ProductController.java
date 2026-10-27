@@ -5,6 +5,7 @@ import com.example.crud.domain.product.ProductRepository;
 import com.example.crud.domain.category.RequestCategory;
 import com.example.crud.domain.product.RequestProduct;
 import com.example.crud.service.AddressSearch;
+import com.example.crud.service.AvailabilityService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,13 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
     private final AddressSearch addressSearch;
+    private final AvailabilityService availabilityService;
 
     @Autowired
-    public ProductController(ProductRepository repository, AddressSearch addressSearch) {
+    public ProductController(ProductRepository repository, AddressSearch addressSearch, AvailabilityService availabilityService) {
         this.repository = repository;
         this.addressSearch = addressSearch;
+        this.availabilityService = availabilityService;
     }
 
     @GetMapping
@@ -41,6 +44,13 @@ public class ProductController {
     public ResponseEntity<String> verifyAvailability(@RequestParam String state, @RequestParam String city, @RequestParam String street){
         String cep = addressSearch.searchAddress(state, city, street);
         return ResponseEntity.ok(cep);
+    }
+
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<Boolean> checkAvailability(@PathVariable String id, @RequestParam String cep){
+        Product product = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        boolean isAvailable = availabilityService.isAvailable(product, cep);
+        return ResponseEntity.ok(isAvailable);
     }
 
     @GetMapping("/endpoint1") //products from only one category

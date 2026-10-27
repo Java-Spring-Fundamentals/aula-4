@@ -12,4 +12,9 @@ public class RequestsExceptionHandler {
         ExceptionDTO response = new ExceptionDTO("Data not found with provided ID", 404);
         return ResponseEntity.badRequest().body(response);
     }
+    @ExceptionHandler(ViaCepException.class)
+    public ResponseEntity<ExceptionDTO> threatViaCep(ViaCepException exception){
+        ExceptionDTO response = new ExceptionDTO(exception.getMessage(), exception.getStatus().value());
+        return ResponseEntity.status(exception.getStatus()).body(response);
+    }
 }
